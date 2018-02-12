@@ -1,7 +1,13 @@
 Idea 1: MBTextA
 
-This would be a website where you pick an MBTA stop off of a map/list. Using real-time MBTA data and Twilio, the web application would then send you a text when the next train is 5 minutes away from arriving at the stop you entered. The app would use a database to store a user account including details such as name and phone number, with the option of signing in with Facebook. It would use the Google Maps, MBTA, and Twilio APIs.
+This would be a website where you pick an MBTA stop off of a map/list. Using real-time MBTA data and Twilio, the web application would then
+send you a text when the next train is 5 minutes away from arriving at the stop you entered. The app would use a database to store a user 
+account including details such as name and phone number, with the option of signing in with Facebook. It would use the Google Maps, MBTA, 
+and Twilio APIs.
 
 Idea 2: Ride 
 
-Website where you can compare prices of Uber and Lyft at the same time. This website will display prices in real time (including any price surges). Programmableweb has both the Uber and Lyft API available for use. The user will input their location and destination through Google Maps. Whichever company the user decides to request a car on, the user do so on this website and the request will go through. Once the request is made, the user will receive a text confirmation. 
+Website where you can compare prices of Uber and Lyft at the same time. This website will display prices in real time (including any price 
+surges). Programmableweb has both the Uber and Lyft API available for use. The user will input their location and destination through 
+Google Maps. Whichever company the user decides to request a car on, the user do so on this website and the request will go through. Once 
+the request is made, the user will receive a text confirmation. 
