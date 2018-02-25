@@ -1,0 +1,20 @@
+USER STORY: Looking at User Data 
+
+The user would first log in to their account (refer to Login User Story). Once logged in and on the home page, user selects the, "Show me my stats" link. This brings the user to the User Data page. 
+
+There would a dropdown bar at the top of the page which allows the user to select information they would like to see for a certain month. Data for the current month would automatically be displayed under the dropdown bar. There would be two bar graphs to display for the month the user would like to view: 
+
+1) In minutes, the time spent waiting for the T (bar color = green), and if T was late then it would be indicated by a different bar color (bar color = red) 
+2) Money spent either using the T (bar color = green), using Uber (bar color = blue), or using Lyft (purple)   
+
+Under each graph would be an indicator of total amount user has spent. So for the time spent waiting for the T: "Total Time Spent in MonthX: X minutes." As for the information regarding the amount spent on each transportation method, there would be a total for each. This is what it would include: "Total Money Spent on MBTA in MonthX: X" , "Total Money Spent on Uber in MonthX: X", "Total Money Spent on Lyft in MonthX: X", and "Total Money Spent on Transportation in MonthX: X." 
+
+There could be several situations as to what the user would experience when viewing their user data.
+
+1) The webpage is broken. Therefore the user will see a client error (4XX) or a server error (5XX). In either case, they will see an error message along with the appropriate error code. 
+
+2) The user is new, therefore there is no data to display. In that case, the user will see a blank graph with totals of, "0" for the time and money spent. There will be a message on the top of the website that say, "New user: No data to display!" 
+
+3) The user has used web app before and the data showing properly. This means that the user sees a dropdown bar in which they are able to select data for the month they would like to view, sees the graphs and totals for the time spent waiting for the MBTA and the money spent on transportation. 
+
+4) The user has used web app before, however the data not showing properly. Either the graph(s) and/or the total(s) are blank or showing odd characters that are not supposed to be displayed. This means that there is an error with the code. 
