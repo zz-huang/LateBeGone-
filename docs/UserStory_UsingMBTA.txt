@@ -1,0 +1,7 @@
+User Story 2: Using the MBTA Text Alert 
+
+After logging in (see User Story 1) the user is directed to a page featuring a list of the nearest MBTA stops. After selecting a stop,
+the user clicks a button labeled "Text Me When Next Train is Near." Once done, the user will receive a text to the phone number associated
+to their account when the next MBTA train is 5 minutes away from arriving at that stop, saying "Next MBTA train will be arriving at 
+<selected stop> in 5 minutes." If the train is late, the user can reply to the text alert with the keyword "late." If the user has a 
+Twitter account associated with their webapp account, their Twitter account will tweet at the MBTA "Hey MBTA, where is my train?"
