@@ -1,4 +1,3 @@
-import urllib
 import json
 import requests
     
@@ -9,10 +8,6 @@ def getRoute():
 #get direction name from JSON
 def getDirection():
     directionName=parseRoute.direction
-
-#get stop name from parsed JSON
-def getName():
-    stopName=stopsList.name
 
 #create list of stop names
 def getStops():
