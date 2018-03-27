@@ -17,9 +17,7 @@ def sendStops():
 	stopsList = []
 
 	# load and get Route & Direction
-	routeURL = request.get_json()
-	routejson = urllib.urlopen(stopsURL)
-	parseRoute = json.loads(routejson.read())
+	parseRoute = request.get_json()
 
 	# get Route from prev JSON, create stopsByRoute url, load 
 	stopsURL = "https://api-v3.mbta.com/stops?filter%5Broute%5D="+str(getRoute(parseRoute))
@@ -33,7 +31,7 @@ def sendStops():
 	returnStops = getOrder(direction)
 
 	exportStops = json.dumps(returnStops)
-		
+
 	return exportStops
 
 # when request for stop prediction is sent
