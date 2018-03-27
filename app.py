@@ -14,57 +14,56 @@ def index():
 @app.route('/stops', methods=['POST'])
 def sendStops():
 
-	stopsList = []
-
 	# load and get Route & Direction
-	parseRoute = request.get_json()
+	jsonFront = request.get_json()
+	route = jsonFront["route"]
+	direction = jsonFront["direction"]
 
-	# get Route from prev JSON, create stopsByRoute url, load 
-	stopsURL = "https://api-v3.mbta.com/stops?filter%5Broute%5D="+str(getRoute(parseRoute))
-	# parseStops=requests.get(stopsURL)
-	stopsjson = urllib.urlopen(stopsURL)
-	# array=json.dumps(jsonurl)
-	parseStops = json.loads(stopsjson.read())
+	# load and get all stops for route
+	stopsURL = "https://api-v3.mbta.com/stops?filter%5Broute%5D="+str(route)
+	stopsDATA = urllib.urlopen(stopsURL)
+	stopsJSON = json.loads(stopsDATA.read())
 
-	getStops(parseStops)
-	direction = getDirection(parseRoute)
-	returnStops = getOrder(direction)
+	# filter out stops for route in direction
+	stopsList = getStops(stopsJSON)
+	returnStops = getOrder(stopsList, direction)
 
+	# create and export JSON of stops for route in direction
 	exportStops = json.dumps(returnStops)
-
 	return exportStops
 
 # when request for stop prediction is sent
 @app.route('/prediction', methods=['POST'])
 def sendPredictions():
 
-	jsonStop = request.get_json()
+	# load and get Stop, Route, & Direction
+	jsonFront = request.get_json()
+	stop = jsonFront["stop"]
+	route = jsonFront["route"]
+	direction = jsonFront["direction"]
 
-	'''
-	More backend code
-	'''
+	# WIP
+	predictionURL = "https://api-v3.mbta.com/predictions?filter[route]={}".format(stop)
+	predictionDATA = urllib.urlopen(predictionURL)
+	predictionJSON= json.loads(predictionDATA.read())
 
-	return # JSON file
+	# WIP
+	prediction = predictionJSON["stop"]
 
-# get route name from JSON
-def getRoute(parseRoute):
-    routeName = parseRoute.route
-    # routeName = "Red"
-    return routeName
+	# WIP
+	exportPrediction = json.dumps(prediction)
+	return exportPrediction
 
 # create list of stop names
-def getStops(parseStops, stopsList):
-	for i in range(len(parseStops["data"])):
-		data = parseStops["data"][i]["attributes"]["name"]
+def getStops(stopsJSON):
+	stopsList = []
+	for i in range(len(stopsJSON["data"])):
+		data = stopsJSON["data"][i]["attributes"]["name"]
 		stopsList.append(data)
+	return stopsList
 
-# get direction name from JSON
-def getDirection(parseRoute):
-    directionName = parseRoute.direction
-    # directionName = "Inbound"
-    return directionName
-
-def getOrder(direction):
+# determine order of 'stopsList'
+def getOrder(stopsList, direction):
 	zero = ["Outbound","Southbound","Westbound","South Station"]
 	one = ["Inbound","Northbound","Eastbound","TF Green Airport"]
 	if direction in zero:
