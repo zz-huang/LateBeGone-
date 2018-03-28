@@ -39,9 +39,6 @@ def sendStops():
 		global exportStops
 		exportStops = json.dumps(returnStops)
 		return Response(json.dumps(exportStops), mimetype='application/json')
-		# return render_template('route.html',exportStops=exportStops)
-		# sendback= request.args.get('name', "stop", type=str)
-		# return jsonify(result=exportStops)
 
 	print("ELSE")
 	print(exportStops)
