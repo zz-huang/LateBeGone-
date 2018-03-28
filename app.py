@@ -22,6 +22,7 @@ def sendStops():
 		# jsonFront = request.get_json()
 		# jsonFront = render_template('route.html',fc=json)
 		json.dumps(jsonFront)
+		# print (jsonFront)
 		route = jsonFront["route"]
 		direction = jsonFront["direction"]
 		# route = "Red"
@@ -31,10 +32,9 @@ def sendStops():
 		stopsURL = "https://api-v3.mbta.com/stops?filter%5Broute%5D="+str(route)
 		stopsDATA = urllib.urlopen(stopsURL)
 		stopsJSON = json.loads(stopsDATA.read())
-
+		print (stopsJSON)
 		# filter out stops for route in direction
-		stopsList = getStops(stopsJSON)
-		returnStops = getOrder(stopsList, direction)
+		returnStops = getStops(stopsJSON, direction)
 		# create and export JSON of stops for route in direction
 		global exportStops
 		exportStops = json.dumps(returnStops)
@@ -55,16 +55,31 @@ def sendPredictions():
 	if request.method == 'POST':
 		# load and get Stop, Route, & Direction
 		jsonFront = request.get_json()
+<<<<<<< HEAD
+=======
+		json.dumps(jsonFront)
+		# print (jsonFront)
+>>>>>>> zoe
 		stop = jsonFront["stop"]
 		route = jsonFront["route"]
 		direction = jsonFront["direction"]
 		direction_id = getDirectionID(direction)
+<<<<<<< HEAD
 
 		# load and get all predictions for stop
 		predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]={}".format(stop)
 		predictionDATA = urllib.urlopen(predictionURL)
 		predictionJSON = json.loads(predictionDATA.read())
 
+=======
+
+		# load and get all predictions for stop
+		predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]={}".format(stop)
+		print (predictionURL)
+		predictionDATA = urllib.urlopen(predictionURL)
+		predictionJSON = json.loads(predictionDATA.read())
+		# print (predictionJSON)
+>>>>>>> zoe
 		# parse JSON for desired prediction
 		for i in range(len(predictionJSON["data"])):
 			if (predictionJSON["data"][i]["relationships"]["route"] == route and
@@ -73,10 +88,17 @@ def sendPredictions():
 				arrive_time = predictionJSON["data"][i]["attributes"]["arrival_time"]
 
 		# assemble data
+<<<<<<< HEAD
 		data = [
 			"departure_time": depart_time,
 			"arrival_time": arrive_time
 		]
+=======
+		data = {
+			"departure_time": depart_time,
+			"arrival_time": arrive_time
+		}
+>>>>>>> zoe
 		global exportPrediction
 		exportPrediction = json.dumps(data)
 		return Response(exportPrediction, mimetype='application/json')
@@ -87,12 +109,19 @@ def sendPredictions():
 	return Response(json.dumps(exportPrediction), mimetype='application/json')
 
 # create list of stop names
-def getStops(stopsJSON):
+def getStops(stopsJSON, direction):
 	stopsList = []
+	# stopsidList= []
+	stopsDict = {}
 	for i in range(len(stopsJSON["data"])):
-		data = stopsJSON["data"][i]["attributes"]["name"]
-		stopsList.append(data)
-	return stopsList
+		name = stopsJSON["data"][i]["attributes"]["name"]
+		stop_id = stopsJSON["data"][i]["id"]
+		stopsList.append(name)
+		# stopsidList.append(stop_id)
+		stopsDict[str(name)]=str(stop_id)
+	getOrder(stopsList, direction)
+	stopsDict["data"]=str(stopsList)
+	return stopsDict
 
 # determine order of 'stopsList'
 def getOrder(stopsList, direction):
