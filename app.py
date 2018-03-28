@@ -52,23 +52,19 @@ def sendPredictions():
 	if request.method == 'POST':
 		# load and get Stop, Route, & Direction
 		jsonFront = request.get_json()
-<<<<<<< HEAD
-=======
+
 		json.dumps(jsonFront)
 		# print (jsonFront)
->>>>>>> zoe
 		stop = jsonFront["stop"]
 		route = jsonFront["route"]
 		direction = jsonFront["direction"]
 		direction_id = getDirectionID(direction)
-<<<<<<< HEAD
 
 		# load and get all predictions for stop
 		predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]={}".format(stop)
 		predictionDATA = urllib.urlopen(predictionURL)
 		predictionJSON = json.loads(predictionDATA.read())
 
-=======
 
 		# load and get all predictions for stop
 		predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]={}".format(stop)
@@ -76,7 +72,6 @@ def sendPredictions():
 		predictionDATA = urllib.urlopen(predictionURL)
 		predictionJSON = json.loads(predictionDATA.read())
 		# print (predictionJSON)
->>>>>>> zoe
 		# parse JSON for desired prediction
 		for i in range(len(predictionJSON["data"])):
 			if (predictionJSON["data"][i]["relationships"]["route"] == route and
@@ -85,17 +80,14 @@ def sendPredictions():
 				arrive_time = predictionJSON["data"][i]["attributes"]["arrival_time"]
 
 		# assemble data
-<<<<<<< HEAD
 		data = [
 			"departure_time": depart_time,
 			"arrival_time": arrive_time
 		]
-=======
 		data = {
 			"departure_time": depart_time,
 			"arrival_time": arrive_time
 		}
->>>>>>> zoe
 		global exportPrediction
 		exportPrediction = json.dumps(data)
 		return Response(exportPrediction, mimetype='application/json')

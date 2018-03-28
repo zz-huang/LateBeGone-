@@ -501,7 +501,6 @@
           //  console.log("The data is: " + data);
           //  });
 
-<<<<<<< HEAD
     // display stops data
     var selectStops = document.getElementById("stops_select"),
             listOfStops = dataDeferred;
@@ -514,10 +513,7 @@
             }
 
 
-=======
     } 
->>>>>>> zoe
-
     //record stop names
     var userStop = {
         "stop": 0,
@@ -565,21 +561,16 @@
             data: JSON.stringify(userStop),
             success: function() { 
                 console.log("sucessful predictions post");
->>>>>>> zoe
                 },
             complete: function(xhr, textStatus) {
                 console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
                 }
-<<<<<<< HEAD
         });
-=======
-        });  
         var dataDeferred = getPData();
             //shows 'GET' request
             $.when( dataDeferred  ).done( function( data ) {
             console.log("The data is: " + data);    
             });  
->>>>>>> zoe
     }
 
     //get predictions data from flask
