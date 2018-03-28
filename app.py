@@ -41,17 +41,28 @@ def sendPredictions():
 	stop = jsonFront["stop"]
 	route = jsonFront["route"]
 	direction = jsonFront["direction"]
+	direction_id = getDirectionID(direction)
 
-	# WIP
-	predictionURL = "https://api-v3.mbta.com/predictions?filter[route]={}".format(stop)
+	# load and get all predictions for stop
+	predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]={}".format(stop)
 	predictionDATA = urllib.urlopen(predictionURL)
-	predictionJSON= json.loads(predictionDATA.read())
+	predictionJSON = json.loads(predictionDATA.read())
 
-	# WIP
-	prediction = predictionJSON["stop"]
+	# parse JSON for desired prediction
+	for i in range(len(predictionJSON["data"])):
+		if (predictionJSON["data"][i]["relationships"]["route"] == route and
+			predictionJSON["data"][i]["attributes"]["direction_id"] == direction_id):
+			depart_time = predictionJSON["data"][i]["attributes"]["departure_time"]
+			arrive_time = predictionJSON["data"][i]["attributes"]["arrival_time"]
 
-	# WIP
-	exportPrediction = json.dumps(prediction)
+	# assemble data
+	data = {
+		"departure_time": depart_time,
+		"arrival_time": arrive_time
+	}
+
+	# create and export JSON of prediction for stop in route in direction
+	exportPrediction = json.dumps(data)
 	return exportPrediction
 
 # create list of stop names
@@ -70,6 +81,14 @@ def getOrder(stopsList, direction):
 		return stopsList
 	if direction in one:
 		return stopsList[::-1]
+
+def getDirectionID(direction):
+	zero = ["Outbound","Southbound","Westbound","South Station"]
+	one = ["Inbound","Northbound","Eastbound","TF Green Airport"]
+	if direction in zero:
+		return 0
+	if direction in one:
+		return 1		
 
 if __name__ == '__main__':
     app.run(debug=True)
