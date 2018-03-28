@@ -451,6 +451,26 @@
         return deferredData; // contains the passed data
     }
 
+    function getPData() {
+        var deferredData = new jQuery.Deferred();
+
+        $.ajax({
+            type: "GET",
+            url: "/prediction",
+            // dataType: "json",
+            contentType: "application/json",
+            success: function(data) { 
+                deferredData.resolve(data);
+                console.log("sucessful GET")
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });
+        
+        return deferredData; // contains the passed data
+    }
+
 
     var userRouteDirection = {
         route: 0,
@@ -480,15 +500,6 @@
             console.log("The data is: " + data);    
             });  
 
-        var select = document.getElementById("stops_select"),
-            listOfStops = dataDeferred
-            for (var j = 0; j < listOfStops.length; j++) {
-                var option = document.createElement("OPTION"),
-                    txt = document.createTextNode(listOfStops[j]);
-                option.appendChild(txt);
-                option.setAttribute("value", listOfStops[i]);
-                select.insertBefore(option, select.lastChild);
-            }
     } 
 
     //record stop names
@@ -498,11 +509,38 @@
         "direction": 0
     };
 
+    var select = document.getElementById("stops_select"),
+    listOfStops = [""]
+    for (var j = 0; j < listOfStops.length; j++) {
+        var option = document.createElement("OPTION"),
+            txt = document.createTextNode(listOfStops[j]);
+        option.appendChild(txt);
+        option.setAttribute("value", listOfStops[i]);
+        select.insertBefore(option, select.lastChild);
+    }
+
     function setUserStopToVariables() {
-        userStop["stop"] = dataDeferred
+        userStop["stop"] = "place-alfcl"
         userStop["route"]=userRouteDirection["route"]
         userStop["direction"]=userRouteDirection["direction"]
         console.log(userStop);
+        $.ajax({
+            url: '/prediction',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(userStop),
+            success: function() { 
+                console.log("sucessful predictions post");
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });  
+        var dataDeferred = getPData();
+            //shows 'GET' request
+            $.when( dataDeferred  ).done( function( data ) {
+            console.log("The data is: " + data);    
+            });  
     }
 
     var predictions = [
