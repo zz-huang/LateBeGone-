@@ -431,25 +431,7 @@
         select.insertBefore(option, select.lastChild);
     }
 
-    function getData() {
-        var deferredData = new jQuery.Deferred();
 
-        $.ajax({
-            type: "GET",
-            url: "/stops",
-            // dataType: "json",
-            contentType: "application/json",
-            success: function(data) { 
-                deferredData.resolve(data);
-                console.log("sucessful GET")
-                },
-            complete: function(xhr, textStatus) {
-                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
-                }
-        });
-        
-        return deferredData; // contains the passed data
-    }
 
 
     var userRouteDirection = {
@@ -473,23 +455,45 @@
             complete: function(xhr, textStatus) {
                 console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
                 }
-        });  
-        var dataDeferred = getData();
-            //shows 'GET' request
-            $.when( dataDeferred  ).done( function( data ) {
-            console.log("The data is: " + data);    
-            });  
+        }); return userRouteDirection;  }
 
-        var select = document.getElementById("stops_select"),
-            listOfStops = dataDeferred
-            for (var j = 0; j < listOfStops.length; j++) {
-                var option = document.createElement("OPTION"),
-                    txt = document.createTextNode(listOfStops[j]);
-                option.appendChild(txt);
-                option.setAttribute("value", listOfStops[i]);
-                select.insertBefore(option, select.lastChild);
+//get data from flask
+    function getData() {
+        var deferredData = new jQuery.Deferred();
+        $.ajax({
+            type: "GET",
+            url: "/stops",
+            // dataType: "json",
+            contentType: "application/json",
+            success: function(data) {
+                deferredData.resolve(data);
+                console.log("sucessful GET")
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });
+
+        return deferredData; // contains the passed data
+    }
+    var dataDeferred = getData();
+            //shows 'GET' request
+           // $.when( dataDeferred  ).done( function( data ) {
+          //  console.log("The data is: " + data);
+          //  });
+
+    // display stops data
+    var selectStops = document.getElementById("stops_select"),
+            listOfStops = dataDeferred;
+    for (var j = 0; j < listOfStops.length; j++) {
+                var optionStops = document.createElement("OPTION"),
+                    txtStops = document.createTextNode(listOfStops[j]);
+                optionStops.appendChild(txtStops);
+                optionStops.setAttribute("value", listOfStops[j]);
+                selectStops.insertBefore(optionStops, selectStops.lastChild);
             }
-    } 
+
+
 
     //record stop names
     var userStop = {
@@ -497,19 +501,54 @@
         "route": 0,
         "direction": 0
     };
+    //set userStop's route and direction
+    userStop["route"]=setUserRouteToVariables()["route"];
+    userStop["direction"]=setUserRouteToVariables()["direction"];
 
+
+    //pass UserStop to flask
     function setUserStopToVariables() {
-        userStop["stop"] = dataDeferred
-        userStop["route"]=userRouteDirection["route"]
-        userStop["direction"]=userRouteDirection["direction"]
+        var tempItem = document.getElementById("stops_select").value;
+        userStop["stop"] = tempItem;
         console.log(userStop);
+        $.ajax({
+            url: '/predictions',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(userStop),
+            success: function() {
+                console.log("sucessful post");
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });
     }
 
-    var predictions = [
-        {"stop": "chicken", "time": "12:45", "other": "12"},
-        {"stop": "25", "time": "swimming"},
-        {"stop": "xyz", "time": "programming"}
-    ];
+    //get predictions data from flask
+    function getPredictionsData() {
+        var deferredData = new jQuery.Deferred();
+        $.ajax({
+            type: "GET",
+            url: "/predictions",
+            // dataType: "json",
+            contentType: "application/json",
+            success: function(data) {
+                deferredData.resolve(data);
+                console.log("sucessful GET")
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });
+
+        return deferredData; // contains the passed data
+    }
+    var dataDeferredPredictions = getPredictionsData();
+    var predictions = dataDeferredPredictions;
+   // example var predictions format
+    // [{"stop": "chicken", "time": "12:45"},
+      //  {"stop": "25", "time": "swimming"}];
 
     // Builds the HTML Table out of prediction.
     function buildHtmlTable() {
