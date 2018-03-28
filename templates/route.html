@@ -440,50 +440,71 @@
         userRouteDirection["route"] = tempItem.split("-")[0];
         userRouteDirection["direction"] = tempItem.split("-")[1];
         console.log(userRouteDirection);
-    }
+        testing= {"route": "Red", "direction":"Inbound"};
+        $.ajax({
+            url: '/stops',
+            type: 'POST',
+            contentType: "application/json",
+            // dataType: "json",
+            data: JSON.stringify(userRouteDirection),
+            // success: function(data) { 
+            //     userRouteDirection.resolve(data);
+            //     },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });    }
 
-    //push json file to flask
-    //option1
-
-    //function myFunction(x) {
-    //     $.getJSON($SCRIPT_ROOT + '/', {
-    //      post: x
-    //      }, function(data) {
-    //        var response = data.result;
-    //         console.log(response);
-    //         });
-    //     }
-
-    //get stop names
-    //change  'abbreviation' to 'stop'
-
-    //passing-a-json-object-from-flask-to-javascript
-    //https://stackoverflow.com/questions/42499535/passing-a-json-object-from-flask-to-javascript
-    //https://github.com/pallets/flask/tree/master/examples/jqueryexample
-    //var stop_name = JSON.parse('{{ stop_name | tojson | safe}}');
-
-    $.getJSON("https://api.myjson.com/bins/7xq2x", function (data) {
-        $.each(data, function (index, item) {
-            $('#stops_select').append(
-                $('<option></option>').val(item.abbreviation).html(item.abbreviation)
-            );
-        });
-    });
-
+    // $.getJSON("/", function (data) {
+    //     $.each(data, function (index, item) {
+    //         $('#stops_select').append(
+    //             $('<option></option>').val(item.abbreviation).html(item.abbreviation)
+    //         );
+    //     });
+    // });
 
     //record stop names
     var userStop = {
-        stop: 0
+        "stop": 0,
+        "route": 0,
+        "direction": 0
     };
 
+    // userStop["route"]=userRouteDirection["route"]
+    // userStop["direction"]=userRouteDirection["direction"]
+    function getData() {
+        var deferredData = new jQuery.Deferred();
+
+        $.ajax({
+            type: "GET",
+            url: "/stops",
+            // dataType: "json",
+            contentType: "application/json",
+            success: function(data) { 
+                deferredData.resolve(data);
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });
+        return deferredData; // contains the passed data
+    }
+    var dataDeferred = getData();
+    //shows 'GET' request
+    $.when( dataDeferred  ).done( function( data ) {
+    console.log("The data is: " + data[0]);    
+    });
+
     function setUserStopToVariables() {
-        var tempItem = document.getElementById("stops_select").value;
-        userStop["stop"] = tempItem;
+        // var dataDeferred = getData();
+        userStop["stop"] = dataDeferred[0]
+        userStop["route"]=userRouteDirection["route"]
+        userStop["direction"]=userRouteDirection["direction"]
         console.log(userStop);
     }
 
     var predictions = [
-        {"stop": "abc", "time": "12:45", "other": "12"},
+        {"stop": "chicken", "time": "12:45", "other": "12"},
         {"stop": "25", "time": "swimming"},
         {"stop": "xyz", "time": "programming"}
     ];
