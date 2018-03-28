@@ -439,7 +439,6 @@
         $.ajax({
             type: "GET",
             url: "/prediction",
-            // dataType: "json",
             contentType: "application/json",
             success: function(data) { 
                 deferredData.resolve(data);
@@ -545,7 +544,7 @@
                 console.log("sucessful post");
 =======
     var select = document.getElementById("stops_select"),
-    listOfStops = [""]
+    listOfStops = ["Alewife"]
     for (var j = 0; j < listOfStops.length; j++) {
         var option = document.createElement("OPTION"),
             txt = document.createTextNode(listOfStops[j]);
