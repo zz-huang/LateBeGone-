@@ -19,14 +19,11 @@ def sendStops():
 	# exportStops = ["Dudley Station", "Washington St opp Ruggles St", "Washington St @ Melnea Cass Blvd", "Melnea Cass Blvd @ Harrison Ave", "Albany St opp Randall St", "Massachusetts Ave @ Albany St", "Massachusetts Ave @ Harrison Ave", "Massachusetts Ave @ Washington St", "Massachusetts Ave @ Tremont St", "Massachusetts Ave @ Columbus Ave", "Massachusetts Ave.", "Massachusetts Ave @ St Botolph St", "Massachusetts Ave @ Clearway St", "Hynes Convention Center", "Massachusetts Ave @ Beacon St", "Massachusetts Ave @ Memorial Dr", "77 Massachusetts Ave", "Massachusetts Ave @ Albany St", "Massachusetts Ave @ Sidney St", "Massachusetts Ave @ Prospect St", "Massachusetts Ave @ Bigelow St", "Massachusetts Ave @ Hancock St", "Massachusetts Ave @ Dana St", "Massachusetts Ave @ Trowbridge St", "Massachusetts Ave @ Bow St", "Massachusetts Ave @ Holyoke St", "Massachusetts Ave @ Johnston Gate", "Quincy St @ Broadway opp Fogg Museum", "Quincy St @ Harvard St", "Mt Auburn St @ DeWolfe St", "Mt Auburn St @ Putnam Ave", "Massachusetts Ave @ Bay St", "Massachusetts Ave @ Hancock St", "Massachusetts Ave @ Pleasant St", "Massachusetts Ave @ Pearl St", "Massachusetts Ave @ Sidney St", "Massachusetts Ave @ Albany St", "84 Massachusetts Ave", "Massachusetts Ave @ Marlborough St", "Massachusetts Ave opp Christian Science Ctr", "Massachusetts Ave @ Huntington Ave", "Massachusetts Ave @ Columbus Ave", "Massachusetts Ave @ Tremont St", "Massachusetts Ave @ Washington St", "Massachusetts Ave @ Harrison Ave", "Massachusetts Ave @ Albany St", "Albany St @ Randall St", "Melnea Cass Blvd @ Harrison Ave", "Washington St @ Williams St", "Washington St @ Ruggles St"]
 	if request.method == 'POST':
 		# load and get Route & Direction
-		# jsonFront = request.get_json()
-		# jsonFront = render_template('route.html',fc=json)
-		json.dumps(jsonFront)
+		jsonFront = request.get_json()
+		# json.dumps(jsonFront)
 		# print (jsonFront)
 		route = jsonFront["route"]
 		direction = jsonFront["direction"]
-		# route = "Red"
-		# direction = "Southbound"
 
 		# load and get all stops for route
 		stopsURL = "https://api-v3.mbta.com/stops?filter%5Broute%5D="+str(route)
@@ -80,10 +77,6 @@ def sendPredictions():
 				arrive_time = predictionJSON["data"][i]["attributes"]["arrival_time"]
 
 		# assemble data
-		data = [
-			"departure_time": depart_time,
-			"arrival_time": arrive_time
-		]
 		data = {
 			"departure_time": depart_time,
 			"arrival_time": arrive_time

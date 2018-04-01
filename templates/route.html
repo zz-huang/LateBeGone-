@@ -430,12 +430,26 @@
         option.setAttribute("value", listOfRoutes[i]);
         select.insertBefore(option, select.lastChild);
     }
-
-
-
+    function getData() {
+        var deferredData = new jQuery.Deferred();
+        $.ajax({
+            type: "GET",
+            url: "/stops",
+            // dataType: "json",
+            contentType: "application/json",
+            success: function(data) { 
+                deferredData.resolve(data);
+                console.log("sucessful GET")
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });
+        
+        return deferredData; // contains the passed data
+    }
     function getPData() {
         var deferredData = new jQuery.Deferred();
-
         $.ajax({
             type: "GET",
             url: "/prediction",
@@ -451,13 +465,10 @@
         
         return deferredData; // contains the passed data
     }
-
-
     var userRouteDirection = {
         route: 0,
         direction: 0
     };
-
     function setUserRouteToVariables() {
         var tempItem = document.getElementById("routes_select").value;
         userRouteDirection["route"] = tempItem.split("-")[0];
@@ -474,45 +485,12 @@
             complete: function(xhr, textStatus) {
                 console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
                 }
-        }); return userRouteDirection;  }
-
-//get data from flask
-    function getData() {
-        var deferredData = new jQuery.Deferred();
-        $.ajax({
-            type: "GET",
-            url: "/stops",
-            // dataType: "json",
-            contentType: "application/json",
-            success: function(data) {
-                deferredData.resolve(data);
-                console.log("sucessful GET")
-                },
-            complete: function(xhr, textStatus) {
-                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
-                }
-        });
-
-        return deferredData; // contains the passed data
-    }
-    var dataDeferred = getData();
+        });  
+        var dataDeferred = getData();
             //shows 'GET' request
-           // $.when( dataDeferred  ).done( function( data ) {
-          //  console.log("The data is: " + data);
-          //  });
-
-    // display stops data
-    var selectStops = document.getElementById("stops_select"),
-            listOfStops = dataDeferred;
-    for (var j = 0; j < listOfStops.length; j++) {
-                var optionStops = document.createElement("OPTION"),
-                    txtStops = document.createTextNode(listOfStops[j]);
-                optionStops.appendChild(txtStops);
-                optionStops.setAttribute("value", listOfStops[j]);
-                selectStops.insertBefore(optionStops, selectStops.lastChild);
-            }
-
-
+            $.when( dataDeferred  ).done( function( data ) {
+            console.log("The data is: " + data);    
+            });  
     } 
     //record stop names
     var userStop = {
@@ -520,22 +498,6 @@
         "route": 0,
         "direction": 0
     };
-    //set userStop's route and direction
-    userStop["route"]=setUserRouteToVariables()["route"];
-    userStop["direction"]=setUserRouteToVariables()["direction"];
-
-    //pass UserStop to flask
-    function setUserStopToVariables() {
-        var tempItem = document.getElementById("stops_select").value;
-        userStop["stop"] = tempItem;
-        console.log(userStop);
-        $.ajax({
-            url: '/predictions',
-            type: 'POST',
-            contentType: "application/json",
-            data: JSON.stringify(userStop),
-            success: function() {
-                console.log("sucessful post");
     var select = document.getElementById("stops_select"),
     listOfStops = ["Alewife"]
     for (var j = 0; j < listOfStops.length; j++) {
@@ -545,7 +507,6 @@
         option.setAttribute("value", listOfStops[i]);
         select.insertBefore(option, select.lastChild);
     }
-
     function setUserStopToVariables() {
         userStop["stop"] = "place-alfcl"
         userStop["route"]=userRouteDirection["route"]
@@ -562,39 +523,18 @@
             complete: function(xhr, textStatus) {
                 console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
                 }
-        });
+        });  
         var dataDeferred = getPData();
             //shows 'GET' request
             $.when( dataDeferred  ).done( function( data ) {
             console.log("The data is: " + data);    
             });  
     }
-
-    //get predictions data from flask
-    function getPredictionsData() {
-        var deferredData = new jQuery.Deferred();
-        $.ajax({
-            type: "GET",
-            url: "/predictions",
-            // dataType: "json",
-            contentType: "application/json",
-            success: function(data) {
-                deferredData.resolve(data);
-                console.log("sucessful GET")
-                },
-            complete: function(xhr, textStatus) {
-                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
-                }
-        });
-
-        return deferredData; // contains the passed data
-    }
-    var dataDeferredPredictions = getPredictionsData();
-    var predictions = dataDeferredPredictions;
-   // example var predictions format
-    // [{"stop": "chicken", "time": "12:45"},
-      //  {"stop": "25", "time": "swimming"}];
-
+    var predictions = [
+        {"stop": "chicken", "time": "12:45", "other": "12"},
+        {"stop": "25", "time": "swimming"},
+        {"stop": "xyz", "time": "programming"}
+    ];
     // Builds the HTML Table out of prediction.
     function buildHtmlTable() {
         var columns = addAllColumnHeaders(predictions);
@@ -608,7 +548,6 @@
             $("#prediction_table").append(row$);
         }
     }
-
     // Adds a header row to the table and returns the set of columns.
     // Need to do union of keys from all records as some records may not contain
     // all records.
@@ -625,10 +564,8 @@
             }
         }
         $("#prediction_table").append(headerTr$);
-
         return columnSet;
     }
-
 </script>
 </body>
 </html>
