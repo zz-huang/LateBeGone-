@@ -6,7 +6,9 @@
     <title>MBTA Predictions</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
 
 </head>
 <body>
@@ -430,31 +432,14 @@
         option.setAttribute("value", listOfRoutes[i]);
         select.insertBefore(option, select.lastChild);
     }
-    function getData() {
-        var deferredData = new jQuery.Deferred();
-        $.ajax({
-            type: "GET",
-            url: "/stops",
-            // dataType: "json",
-            contentType: "application/json",
-            success: function(data) { 
-                deferredData.resolve(data);
-                console.log("sucessful GET")
-                },
-            complete: function(xhr, textStatus) {
-                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
-                }
-        });
-        
-        return deferredData; // contains the passed data
-    }
+
     function getPData() {
         var deferredData = new jQuery.Deferred();
         $.ajax({
             type: "GET",
             url: "/prediction",
             contentType: "application/json",
-            success: function(data) { 
+            success: function(data) {
                 deferredData.resolve(data);
                 console.log("sucessful GET")
                 },
@@ -462,51 +447,64 @@
                 console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
                 }
         });
-        
+
         return deferredData; // contains the passed data
     }
     var userRouteDirection = {
         route: 0,
         direction: 0
     };
+
     function setUserRouteToVariables() {
         var tempItem = document.getElementById("routes_select").value;
         userRouteDirection["route"] = tempItem.split("-")[0];
         userRouteDirection["direction"] = tempItem.split("-")[1];
         console.log(userRouteDirection);
+        // var deferredData = new jQuery.Deferred();
         $.ajax({
             url: '/stops',
             type: 'POST',
             contentType: "application/json",
             data: JSON.stringify(userRouteDirection),
-            success: function() { 
-                console.log("sucessful post");
+            success: function(exportStops) {
+                console.log(exportStops)
+                // exportStops=String.prototype(exportStops);
+                // document.getElementById("stops_select").innerHTML = exportStops.name;
+                helpers.buildDropdown(
+                    jQuery.parseJSON(exportStops),
+                    $('#stops_select'),
+                    'Select an option'
+                );
                 },
-            complete: function(xhr, textStatus) {
-                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+        });
+    }
+
+    var helpers =
+        {
+            buildDropdown: function(result, dropdown, emptyMessage)
+            {
+                // Remove current options
+                dropdown.html('');
+                // Add the empty option with the empty message
+                dropdown.append('<option value="">' + emptyMessage + '</option>');
+                // Check result isnt empty
+                if(result != '')
+                {
+                    // Loop through each of the results and append the option to the dropdown
+                    $.each(result, function(k, v) {
+                        dropdown.append('<option value="' + v.id + '">' + v.name + '</option>');
+                    });
                 }
-        });  
-        var dataDeferred = getData();
-            //shows 'GET' request
-            $.when( dataDeferred  ).done( function( data ) {
-            console.log("The data is: " + data);    
-            });  
-    } 
+            }
+        }
+
     //record stop names
     var userStop = {
         "stop": 0,
         "route": 0,
         "direction": 0
     };
-    var select = document.getElementById("stops_select"),
-    listOfStops = ["Alewife"]
-    for (var j = 0; j < listOfStops.length; j++) {
-        var option = document.createElement("OPTION"),
-            txt = document.createTextNode(listOfStops[j]);
-        option.appendChild(txt);
-        option.setAttribute("value", listOfStops[i]);
-        select.insertBefore(option, select.lastChild);
-    }
+
     function setUserStopToVariables() {
         userStop["stop"] = "place-alfcl"
         userStop["route"]=userRouteDirection["route"]
@@ -527,8 +525,8 @@
         var dataDeferred = getPData();
             //shows 'GET' request
             $.when( dataDeferred  ).done( function( data ) {
-            console.log("The data is: " + data);    
-            });  
+            console.log("The data is: " + data);
+            });
     }
     var predictions = [
         {"stop": "chicken", "time": "12:45", "other": "12"},
