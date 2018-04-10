@@ -433,23 +433,6 @@
         select.insertBefore(option, select.lastChild);
     }
 
-    function getPData() {
-        var deferredData = new jQuery.Deferred();
-        $.ajax({
-            type: "GET",
-            url: "/prediction",
-            contentType: "application/json",
-            success: function(data) {
-                deferredData.resolve(data);
-                console.log("sucessful GET")
-                },
-            complete: function(xhr, textStatus) {
-                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
-                }
-        });
-
-        return deferredData; // contains the passed data
-    }
     var userRouteDirection = {
         route: 0,
         direction: 0
@@ -467,13 +450,14 @@
             contentType: "application/json",
             data: JSON.stringify(userRouteDirection),
             success: function(exportStops) {
-                console.log(exportStops)
-                // exportStops=String.prototype(exportStops);
-                // document.getElementById("stops_select").innerHTML = exportStops.name;
+                // console.log(exportStops)
                 helpers.buildDropdown(
                     jQuery.parseJSON(exportStops),
                     $('#stops_select'),
                     'Select an option'
+                );
+                setUserStopToVariables(
+                    jQuery.parseJSON(exportStops)
                 );
                 },
         });
@@ -505,8 +489,10 @@
         "direction": 0
     };
 
-    function setUserStopToVariables() {
-        userStop["stop"] = "place-alfcl"
+    function setUserStopToVariables(results) {
+        var tempItem = document.getElementById("stops_select").value;
+        // console.log(tempItem)
+        userStop["stop"]=tempItem
         userStop["route"]=userRouteDirection["route"]
         userStop["direction"]=userRouteDirection["direction"]
         console.log(userStop);
@@ -515,26 +501,24 @@
             type: 'POST',
             contentType: "application/json",
             data: JSON.stringify(userStop),
-            success: function() { 
-                console.log("sucessful predictions post");
+            success: function(exportPrediction) {
+                console.log(exportPrediction);
+                buildHtmlTable(
+                    jQuery.parseJSON(exportPrediction),
+                );
+                setUserStopToVariables(
+                    jQuery.parseJSON(exportPrediction)
+                );
                 },
-            complete: function(xhr, textStatus) {
-                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
-                }
         });  
-        var dataDeferred = getPData();
-            //shows 'GET' request
-            $.when( dataDeferred  ).done( function( data ) {
-            console.log("The data is: " + data);
-            });
     }
-    var predictions = [
-        {"stop": "chicken", "time": "12:45", "other": "12"},
-        {"stop": "25", "time": "swimming"},
-        {"stop": "xyz", "time": "programming"}
-    ];
-    // Builds the HTML Table out of prediction.
-    function buildHtmlTable() {
+    // var predictions = [
+    //     {"stop": "chicken", "time": "12:45", "other": "12"},
+    //     {"stop": "25", "time": "swimming"},
+    //     {"stop": "xyz", "time": "programming"}
+    // ];
+
+    function buildHtmlTable(predictions) {
         var columns = addAllColumnHeaders(predictions);
         for (var i = 0; i < predictions.length; i++) {
             var row$ = $('<tr/>');
@@ -546,10 +530,8 @@
             $("#prediction_table").append(row$);
         }
     }
-    // Adds a header row to the table and returns the set of columns.
-    // Need to do union of keys from all records as some records may not contain
-    // all records.
     function addAllColumnHeaders(predictions) {
+        console.log(predictions)
         var columnSet = [];
         var headerTr$ = $('<tr/>');
         for (var i = 0; i < predictions.length; i++) {
@@ -564,6 +546,7 @@
         $("#prediction_table").append(headerTr$);
         return columnSet;
     }
+
 </script>
 </body>
 </html>
