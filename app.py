@@ -43,12 +43,12 @@ def sendPredictions():
     predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]={}".format(stop)
     predictionDATA = urllib.urlopen(predictionURL)
     predictionJSON = json.loads(predictionDATA.read())
-    counter = 0
+#    counter = 0
     dataList = []
     for i in range(len(predictionJSON["data"])):
         if (predictionJSON["data"][i]["relationships"]["route"]["data"]["id"] == route and
-            predictionJSON["data"][i]["attributes"]["direction_id"] == direction_id) and counter<=3:
-            counter +=1
+            predictionJSON["data"][i]["attributes"]["direction_id"] == direction_id): #and counter<=3:
+            #counter +=1
             dataDict = {}
             dataDict["Departure"] = predictionJSON["data"][i]["attributes"]["departure_time"]
             dataDict["arrive_time"] = predictionJSON["data"][i]["attributes"]["arrival_time"]
