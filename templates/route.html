@@ -1,4 +1,113 @@
 <!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuaW4Ecn3gqokwxP0PW3ZdVrK1og7YI28&libraries=places" type="text/javascript"></script>
+
+</head>
+<body>
+<input id="searchTextField" type="text" size="50" placeholder="Enter location" autocomplete="on" runat="server" />
+<input type="hidden" id="city2" name="city2" />
+<input type="hidden" id="cityLat" name="cityLat" />
+<input type="hidden" id="cityLng" name="cityLng" />
+<input id="destTextField" type="text" size="50" placeholder="Enter destination" autocomplete="on" runat="server" />
+<input type="hidden" id="destcity2" name="destcity2" />
+<input type="hidden" id="destcityLat" name="destcityLat" />
+<input type="hidden" id="destcityLng" name="destcityLng" />
+
+
+<label>Get Estimates</label>
+<button onclick="getUberPrice();">Uber</button>
+<!--<label>Get Lyft Estimate</label>-->
+<button onclick="getLyftPrice();">Lyft</button>
+
+
+<script type="text/javascript">
+    var userPath = {
+        startlat: 0,
+        startlong: 0,
+        endlat: 0,
+        endlong: 0
+    };
+
+    function initialize() {
+        var input = document.getElementById('searchTextField');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+            document.getElementById('city2').value = place.name;
+            document.getElementById('cityLat').value = place.geometry.location.lat();
+            document.getElementById('cityLng').value = place.geometry.location.lng();
+            userPath["startlat"]=document.getElementById('cityLat').value;
+            userPath["startlong"]=document.getElementById('cityLng').value;
+
+        });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+    function initialize2() {
+        var input = document.getElementById('destTextField');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+            document.getElementById('destcity2').value = place.name;
+            document.getElementById('destcityLat').value = place.geometry.location.lat();
+            document.getElementById('destcityLng').value = place.geometry.location.lng();
+            userPath["endlat"]=document.getElementById('destcityLat').value;
+            userPath["endlong"]=document.getElementById('destcityLng').value;
+            //alert("This function is working!");
+            //alert(place.name);
+            // alert(place.address_components[0].long_name);
+
+        });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize2);
+    function getUberPrice(){
+        $.ajax({
+            url: 'https://api.uber.com/v1/estimates/price?start_latitude=8.969145&start_longitude=-79.5177675&end_latitude=8.984104&end_longitude=-79.517467',
+            type: 'GET',
+            ContentType: "application/json",
+            AcceptLanguage:'en_US',
+            headers: {
+                'Authorization': "Token " + "API_KEY",
+                // 'Accept-Language': 'en_US',
+                // 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'access-control-allow-headers, accept-Language, x-requested-With, authorization, content-type, access-control-allow-origin, access-control-allow-methods',
+            },
+            success: function(exportUberPrice) {
+                console.log(exportUberPrice)
+                getUberPrice(
+                    jQuery.parseJSON(exportUberPrice)
+                );
+            },
+        });
+    }
+
+    function getLyftPrice(){
+        $.ajax({
+            url: 'https://api.lyft.com/v1/cost?start_lat=37.7763&start_lng=-122.3918&end_lat=37.7972&end_lng=-122.4533',
+            type: 'GET',
+            contentType: "application/json",
+            headers: {
+                'Authorization': "bearer " + "API_KEY",
+                'Access-Control-Allow-Origin': '*',
+                // 'Access-Control-Allow-Headers': 'access-control-allow-headers, accept-Language, x-requested-With, authorization, content-type, access-control-allow-origin, access-control-allow-methods'
+            },
+            success: function(exportLyftPrice) {
+                console.log(exportLyftPrice)
+                getLyftPrice(
+                    jQuery.parseJSON(exportLyftPrice)
+                );
+            },
+        });
+    }
+
+</script>
+</body>
+</html>
+<br>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -491,7 +600,7 @@
 
     function setUserStopToVariables(results) {
         var tempItem = document.getElementById("stops_select").value;
-        // console.log(tempItem)
+        console.log(tempItem)
         userStop["stop"]=tempItem
         userStop["route"]=userRouteDirection["route"]
         userStop["direction"]=userRouteDirection["direction"]
@@ -512,11 +621,6 @@
                 },
         });  
     }
-    // var predictions = [
-    //     {"stop": "chicken", "time": "12:45", "other": "12"},
-    //     {"stop": "25", "time": "swimming"},
-    //     {"stop": "xyz", "time": "programming"}
-    // ];
 
     function buildHtmlTable(predictions) {
         var columns = addAllColumnHeaders(predictions);
