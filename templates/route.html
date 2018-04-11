@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>MBTA Predictions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+</head>
+<body>
+<label>Routes:</label>
+<select id="routes_select">
+    <!--<option value="default">default</option> -->
+
+</select>
+<button onclick="setUserRouteToVariables();">Save</button>
+
+<label>Stops:</label>
+<select id="stops_select">
+    <!-- <option value="stops_default"> default</option>-->
+</select>
+
+<button onclick="setUserStopToVariables();">Save</button>
+<br>
+<button onclick="buildHtmlTable()">Predict</button>
+<table id="prediction_table" border="1">
+</table>
+
+
+<script>
+    var select = document.getElementById("routes_select"),
+        listOfRoutes = ['1-Outbound',
+            '1-Inbound',
+            '10-Outbound',
+            '10-Inbound',
+            '100-Outbound',
+            '100-Inbound',
+            '101-Outbound',
+            '101-Inbound',
+            '104-Outbound',
+            '104-Inbound',
+            '105-Outbound',
+            '105-Inbound',
+            '106-Outbound',
+            '106-Inbound',
+            '108-Outbound',
+            '108-Inbound',
+            '109-Outbound',
+            '109-Inbound',
+            '11-Outbound',
+            '11-Inbound',
+            '110-Outbound',
+            '110-Inbound',
+            '111-Outbound',
+            '111-Inbound',
+            '112-Outbound',
+            '112-Inbound',
+            '114-Outbound',
+            '114-Inbound',
+            '116-Outbound',
+            '116-Inbound',
+            '117-Outbound',
+            '117-Inbound',
+            '119-Outbound',
+            '119-Inbound',
+            '120-Outbound',
+            '120-Inbound',
+            '121-Outbound',
+            '121-Inbound',
+            '131-Outbound',
+            '131-Inbound',
+            '132-Outbound',
+            '132-Inbound',
+            '134-Outbound',
+            '134-Inbound',
+            '136-Outbound',
+            '136-Inbound',
+            '137-Outbound',
+            '137-Inbound',
+            '14-Outbound',
+            '14-Inbound',
+            '15-Outbound',
+            '15-Inbound',
+            '16-Outbound',
+            '16-Inbound',
+            '17-Outbound',
+            '17-Inbound',
+            '170-Outbound',
+            '170-Inbound',
+            '171-Outbound',
+            '171-Inbound',
+            '18-Outbound',
+            '18-Inbound',
+            '19-Outbound',
+            '19-Inbound',
+            '195-Outbound',
+            '195-Inbound',
+            '201-Outbound',
+            '201-Inbound',
+            '202-Outbound',
+            '202-Inbound',
+            '21-Outbound',
+            '21-Inbound',
+            '210-Outbound',
+            '210-Inbound',
+            '211-Outbound',
+            '211-Inbound',
+            '212-Outbound',
+            '212-Inbound',
+            '214-Outbound',
+            '214-Inbound',
+            '215-Outbound',
+            '215-Inbound',
+            '216-Outbound',
+            '216-Inbound',
+            '217-Outbound',
+            '217-Inbound',
+            '22-Outbound',
+            '22-Inbound',
+            '220-Outbound',
+            '220-Inbound',
+            '221-Outbound',
+            '221-Inbound',
+            '222-Outbound',
+            '222-Inbound',
+            '225-Outbound',
+            '225-Inbound',
+            '23-Outbound',
+            '23-Inbound',
+            '230-Outbound',
+            '230-Inbound',
+            '236-Outbound',
+            '236-Inbound',
+            '238-Outbound',
+            '238-Inbound',
+            '24-Outbound',
+            '24-Inbound',
+            '240-Outbound',
+            '240-Inbound',
+            '245-Outbound',
+            '245-Inbound',
+            '26-Outbound',
+            '26-Inbound',
+            '27-Outbound',
+            '27-Inbound',
+            '28-Outbound',
+            '28-Inbound',
+            '29-Outbound',
+            '29-Inbound',
+            '30-Outbound',
+            '30-Inbound',
+            '31-Outbound',
+            '31-Inbound',
+            '32-Outbound',
+            '32-Inbound',
+            '325-Outbound',
+            '325-Inbound',
+            '326-Outbound',
+            '326-Inbound',
+            '33-Outbound',
+            '33-Inbound',
+            '34-Outbound',
+            '34-Inbound',
+            '34E-Outbound',
+            '34E-Inbound',
+            '35-Outbound',
+            '35-Inbound',
+            '350-Outbound',
+            '350-Inbound',
+            '351-Outbound',
+            '351-Inbound',
+            '352-Outbound',
+            '352-Inbound',
+            '354-Outbound',
+            '354-Inbound',
+            '36-Outbound',
+            '36-Inbound',
+            '37-Outbound',
+            '37-Inbound',
+            '38-Outbound',
+            '38-Inbound',
+            '39-Outbound',
+            '39-Inbound',
+            '4-Outbound',
+            '4-Inbound',
+            '40-Outbound',
+            '40-Inbound',
+            '41-Outbound',
+            '41-Inbound',
+            '411-Outbound',
+            '411-Inbound',
+            '42-Outbound',
+            '42-Inbound',
+            '424-Outbound',
+            '424-Inbound',
+            '426-Outbound',
+            '426-Inbound',
+            '428-Outbound',
+            '428-Inbound',
+            '429-Outbound',
+            '429-Inbound',
+            '43-Outbound',
+            '43-Inbound',
+            '430-Outbound',
+            '430-Inbound',
+            '434-Outbound',
+            '434-Inbound',
+            '435-Outbound',
+            '435-Inbound',
+            '436-Outbound',
+            '436-Inbound',
+            '439-Outbound',
+            '439-Inbound',
+            '44-Outbound',
+            '44-Inbound',
+            '441-Outbound',
+            '441-Inbound',
+            '442-Outbound',
+            '442-Inbound',
+            '448-Outbound',
+            '448-Inbound',
+            '449-Outbound',
+            '449-Inbound',
+            '45-Outbound',
+            '45-Inbound',
+            '450-Outbound',
+            '450-Inbound',
+            '451-Outbound',
+            '451-Inbound',
+            '455-Outbound',
+            '455-Inbound',
+            '456-Outbound',
+            '456-Inbound',
+            '459-Outbound',
+            '459-Inbound',
+            '465-Outbound',
+            '465-Inbound',
+            '47-Outbound',
+            '47-Inbound',
+            '5-Outbound',
+            '5-Inbound',
+            '50-Outbound',
+            '50-Inbound',
+            '501-Outbound',
+            '501-Inbound',
+            '502-Outbound',
+            '502-Inbound',
+            '503-Outbound',
+            '503-Inbound',
+            '504-Outbound',
+            '504-Inbound',
+            '505-Outbound',
+            '505-Inbound',
+            '51-Outbound',
+            '51-Inbound',
+            '52-Outbound',
+            '52-Inbound',
+            '55-Outbound',
+            '55-Inbound',
+            '553-Outbound',
+            '553-Inbound',
+            '554-Outbound',
+            '554-Inbound',
+            '556-Outbound',
+            '556-Inbound',
+            '558-Outbound',
+            '558-Inbound',
+            '57-Outbound',
+            '57-Inbound',
+            '57A-Outbound',
+            '57A-Inbound',
+            '59-Outbound',
+            '59-Inbound',
+            '60-Outbound',
+            '60-Inbound',
+            '62-Outbound',
+            '62-Inbound',
+            '64-Outbound',
+            '64-Inbound',
+            '65-Outbound',
+            '65-Inbound',
+            '66-Outbound',
+            '66-Inbound',
+            '67-Outbound',
+            '67-Inbound',
+            '68-Outbound',
+            '68-Inbound',
+            '69-Outbound',
+            '69-Inbound',
+            '7-Outbound',
+            '7-Inbound',
+            '70-Outbound',
+            '70-Inbound',
+            '701-Outbound',
+            '701-Inbound',
+            '708-Outbound',
+            '708-Inbound',
+            '70A-Outbound',
+            '70A-Inbound',
+            '71-Outbound',
+            '71-Inbound',
+            '710-Outbound',
+            '710-Inbound',
+            '712-Outbound',
+            '712-Inbound',
+            '713-Outbound',
+            '713-Inbound',
+            '714-Outbound',
+            '714-Inbound',
+            '716-Outbound',
+            '716-Inbound',
+            '72-Outbound',
+            '72-Inbound',
+            '73-Outbound',
+            '73-Inbound',
+            '74-Outbound',
+            '74-Inbound',
+            '741-Outbound',
+            '741-Inbound',
+            '742-Outbound',
+            '742-Inbound',
+            '743-Outbound',
+            '743-Inbound',
+            '747-Outbound',
+            '747-Inbound',
+            '749-Outbound',
+            '749-Inbound',
+            '75-Outbound',
+            '75-Inbound',
+            '751-Outbound',
+            '751-Inbound',
+            '76-Outbound',
+            '76-Inbound',
+            '77-Outbound',
+            '77-Inbound',
+            '78-Outbound',
+            '78-Inbound',
+            '79-Outbound',
+            '79-Inbound',
+            '8-Outbound',
+            '8-Inbound',
+            '80-Outbound',
+            '80-Inbound',
+            '83-Outbound',
+            '83-Inbound',
+            '84-Outbound',
+            '84-Inbound',
+            '85-Outbound',
+            '85-Inbound',
+            '86-Outbound',
+            '86-Inbound',
+            '87-Outbound',
+            '87-Inbound',
+            '88-Outbound',
+            '88-Inbound',
+            '89-Outbound',
+            '89-Inbound',
+            '9-Outbound',
+            '9-Inbound',
+            '90-Outbound',
+            '90-Inbound',
+            '91-Outbound',
+            '91-Inbound',
+            '92-Outbound',
+            '92-Inbound',
+            '93-Outbound',
+            '93-Inbound',
+            '94-Outbound',
+            '94-Inbound',
+            '95-Outbound',
+            '95-Inbound',
+            '96-Outbound',
+            '96-Inbound',
+            '97-Outbound',
+            '97-Inbound',
+            '99-Outbound',
+            '99-Inbound',
+            'Blue-Westbound',
+            'Blue-Eastbound',
+            'Boat-F1-Outbound',
+            'Boat-F1-Inbound',
+            'Boat-F4-Outbound',
+            'Boat-F4-Inbound',
+            'CR-Fairmount-Outbound',
+            'CR-Fairmount-Inbound',
+            'CR-Fitchburg-Outbound',
+            'CR-Fitchburg-Inbound',
+            'CR-Foxboro-South Station',
+            'CR-Foxboro-TF Green Airport',
+            'CR-Franklin-Outbound',
+            'CR-Franklin-Inbound',
+            'CR-Greenbush-Outbound',
+            'CR-Greenbush-Inbound',
+            'CR-Haverhill-Outbound',
+            'CR-Haverhill-Inbound',
+            'CR-Kingston-Outbound',
+            'CR-Kingston-Inbound',
+            'CR-Lowell-Outbound',
+            'CR-Lowell-Inbound',
+            'CR-Middleborough-Outbound',
+            'CR-Middleborough-Inbound',
+            'CR-Needham-Outbound',
+            'CR-Needham-Inbound',
+            'CR-Newburyport-Outbound',
+            'CR-Newburyport-Inbound',
+            'CR-Providence-Outbound',
+            'CR-Providence-Inbound',
+            'CR-Worcester-Outbound',
+            'CR-Worcester-Inbound',
+            'Green-B-Westbound',
+            'Green-B-Eastbound',
+            'Green-C-Westbound',
+            'Green-C-Eastbound',
+            'Green-D-Westbound',
+            'Green-D-Eastbound',
+            'Green-E-Westbound',
+            'Green-E-Eastbound',
+            'Mattapan-Outbound',
+            'Mattapan-Inbound',
+            'Orange-Southbound',
+            'Orange-Northbound',
+            'Red-Southbound',
+            'Red-Northbound'];
+    for (var i = 0; i < listOfRoutes.length; i++) {
+        var option = document.createElement("OPTION"),
+            txt = document.createTextNode(listOfRoutes[i]);
+        option.appendChild(txt);
+        option.setAttribute("value", listOfRoutes[i]);
+        select.insertBefore(option, select.lastChild);
+    }
+
+    function getData() {
+        var deferredData = new jQuery.Deferred();
+
+        $.ajax({
+            type: "GET",
+            url: "/stops",
+            // dataType: "json",
+            contentType: "application/json",
+            success: function(data) { 
+                deferredData.resolve(data);
+                console.log("sucessful GET")
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });
+        
+        return deferredData; // contains the passed data
+    }
+
+
+    var userRouteDirection = {
+        route: 0,
+        direction: 0
+    };
+
+    function setUserRouteToVariables() {
+        var tempItem = document.getElementById("routes_select").value;
+        userRouteDirection["route"] = tempItem.split("-")[0];
+        userRouteDirection["direction"] = tempItem.split("-")[1];
+        console.log(userRouteDirection);
+        $.ajax({
+            url: '/stops',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(userRouteDirection),
+            success: function() { 
+                console.log("sucessful post");
+                },
+            complete: function(xhr, textStatus) {
+                console.log("AJAX Request complete -> ", xhr, " -> ", textStatus);
+                }
+        });  
+        var dataDeferred = getData();
+            //shows 'GET' request
+            $.when( dataDeferred  ).done( function( data ) {
+            console.log("The data is: " + data);    
+            });  
+
+        var select = document.getElementById("stops_select"),
+            listOfStops = dataDeferred
+            for (var j = 0; j < listOfStops.length; j++) {
+                var option = document.createElement("OPTION"),
+                    txt = document.createTextNode(listOfStops[j]);
+                option.appendChild(txt);
+                option.setAttribute("value", listOfStops[i]);
+                select.insertBefore(option, select.lastChild);
+            }
+    } 
+
+    //record stop names
+    var userStop = {
+        "stop": 0,
+        "route": 0,
+        "direction": 0
+    };
+
+    function setUserStopToVariables() {
+        userStop["stop"] = dataDeferred
+        userStop["route"]=userRouteDirection["route"]
+        userStop["direction"]=userRouteDirection["direction"]
+        console.log(userStop);
+    }
+
+    var predictions = [
+        {"stop": "chicken", "time": "12:45", "other": "12"},
+        {"stop": "25", "time": "swimming"},
+        {"stop": "xyz", "time": "programming"}
+    ];
+
+    // Builds the HTML Table out of prediction.
+    function buildHtmlTable() {
+        var columns = addAllColumnHeaders(predictions);
+        for (var i = 0; i < predictions.length; i++) {
+            var row$ = $('<tr/>');
+            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                var cellValue = predictions[i][columns[colIndex]];
+                if (cellValue == null) cellValue = "";
+                row$.append($('<td/>').html(cellValue));
+            }
+            $("#prediction_table").append(row$);
+        }
+    }
+
+    // Adds a header row to the table and returns the set of columns.
+    // Need to do union of keys from all records as some records may not contain
+    // all records.
+    function addAllColumnHeaders(predictions) {
+        var columnSet = [];
+        var headerTr$ = $('<tr/>');
+        for (var i = 0; i < predictions.length; i++) {
+            var rowHash = predictions[i];
+            for (var key in rowHash) {
+                if ($.inArray(key, columnSet) == -1) {
+                    columnSet.push(key);
+                    headerTr$.append($('<th/>').html(key));
+                }
+            }
+        }
+        $("#prediction_table").append(headerTr$);
+
+        return columnSet;
+    }
+
+</script>
+</body>
+</html>

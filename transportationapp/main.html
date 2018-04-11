@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login V10</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+</head>
+<body>
+	<div class="wrapper">
+
+		<header>
+			<h1>Welcome!</h1>
+		</header>
+		
+		<section class="columns">
+			
+			<div class="column1">
+				<h2>MBTA</h2>
+				
+				<label>Routes:</label>
+				<select id="routes_select">
+
+				</select>
+				<button onclick="setUserRouteToVariables();">Save</button> 
+			</br>
+
+			<label>Stops:</label>
+			<select id="stops_select">
+			</select>
+
+			<button onclick="setUserStopToVariables();">Save</button>
+		</br></br>
+
+		<button onclick="buildHtmlTable()">Predict</button>
+		<table id="prediction_table" border="1">
+		</table>
+
+
+
+	</div>
+	
+	<div class="column2">
+		<h2>UBER</h2>
+		<select id="routes_select">
+
+		</select>
+		<button onclick="setUserRouteToVariables();">Save</button> 
+	</br>
+
+	<label>Stops:</label>
+	<select id="stops_select">
+	</select>
+
+	<button onclick="setUserStopToVariables();">Save</button>
+</br></br>
+
+<button onclick="buildHtmlTable()">Predict</button>
+<table id="prediction_table" border="1">
+</table>
+</div>
+
+<div class="column3">
+	<h2>LYFT</h2>
+	<select id="routes_select">
+
+	</select>
+	<button onclick="setUserRouteToVariables();">Save</button> 
+</br>
+
+<label>Stops:</label>
+<select id="stops_select">
+</select>
+
+<button onclick="setUserStopToVariables();">Save</button>
+</br></br>
+
+<button onclick="buildHtmlTable()">Predict</button>
+<table id="prediction_table" border="1">
+</table>
+</div>
+
+</section>	
+
+	<!-- <footer>
+		<h3>Footer</h3>
+		<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsam, porro. Doloribus vitae non dolores modi dolorum commodi perspiciatis dicta nostrum minus esse, totam officia, quibusdam amet quas tempora? Voluptatibus, esse.</p>
+	</footer> -->
+
+</div>
+</body>
+</html>
