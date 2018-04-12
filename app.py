@@ -1,23 +1,29 @@
 import json
 import requests
+import os
 from flask import *
 
 app = Flask(__name__)
 
-# displays main page
+# displays web form
 @app.route('/', methods=['GET'])
-def main_page():
-	return render_template('main.html')
+def index():
+    return render_template('route.html')
 
-# displays login page
-@app.route('/login', methods=['GET'])
-def login_page():
-	return render_template('login.html')
-
-# displays route page
-@app.route('/route', methods=['GET'])
-def route_page():
-	return render_template('route.html')
+## displays main page
+#@app.route('/', methods=['GET'])
+#def main_page():
+#	return render_template('main.html')
+#
+## displays login page
+#@app.route('/login', methods=['GET'])
+#def login_page():
+#	return render_template('login.html')
+#
+## displays route page
+#@app.route('/route', methods=['GET'])
+#def route_page():
+#	return render_template('route.html')
 
 # when request for stop list is sent
 @app.route('/stops', methods=['POST'])
@@ -53,6 +59,8 @@ def sendPredictions():
     exportPrediction = json.dumps(returnPredictions)
     return jsonify(exportPrediction)
 
+@app.route('/uber', methods=['POST'])
+
 def sendUber():
     jsonFront = request.form.to_dict()
     startlat = jsonFront["startlat"]
@@ -60,30 +68,22 @@ def sendUber():
     endlat = jsonFront["endlat"]
     endlong = jsonFront["endlong"]
 
-    url = 'https://sandbox-api.lyft.com/v1/cost'
+    url = 'https://sandbox-api.uber.com/v1/estimates/price'
 
     parameters = {
-      'access_token':'qSSLT3qEdTxEe+ORMu5uE3XNx1u/91b0PBdoEIVPcvgBAsg67gn890XT65jQusItWISKN538HYzlmE3tXZVeeC8ML6qMv/5xxYqgeGEeDCvrmlqdZbYvO0o=',
+      'server_token':'llbL_ENfT42zjRAxv8HYHuR_6qtr38eNGzx-OXj0',
       'start_latitude': float(startlat),
       'start_longitude': float(startlong),
       'end_latitude': float(endlat),
       'end_longitude': float(endlong),
     }
-#    url = 'https://sandbox-api.uber.com/v1/estimates/price'
-#
-#    parameters = {
-#      'server_token':'llbL_ENfT42zjRAxv8HYHuR_6qtr38eNGzx-OXj0',
-#      'start_latitude': float(startlat),
-#      'start_longitude': float(startlong),
-#      'end_latitude': float(endlat),
-#      'end_longitude': float(endlong),
-#    }
 
     response = requests.get(url, params=parameters)
 
     data = json.dumps( response.json(), indent=2 )
 
     return jsonify(data)
+
 
 @app.route('/lyft', methods=['POST'])
 
@@ -94,14 +94,14 @@ def sendLyft():
     endlat = jsonFront["endlat"]
     endlong = jsonFront["endlong"]
 
-    url = 'https://sandbox-api.lyft.com/v1/cost'
+    url = 'https://api.lyft.com/v1/cost'
 
     parameters = {
-      'access_token':'qSSLT3qEdTxEe+ORMu5uE3XNx1u/91b0PBdoEIVPcvgBAsg67gn890XT65jQusItWISKN538HYzlmE3tXZVeeC8ML6qMv/5xxYqgeGEeDCvrmlqdZbYvO0o=',
-      'start_latitude': float(startlat),
-      'start_longitude': float(startlong),
-      'end_latitude': float(endlat),
-      'end_longitude': float(endlong),
+      'Authorization':'qSSLT3qEdTxEe+ORMu5uE3XNx1u/91b0PBdoEIVPcvgBAsg67gn890XT65jQusItWISKN538HYzlmE3tXZVeeC8ML6qMv/5xxYqgeGEeDCvrmlqdZbYvO0o=',
+      'start_lat': float(startlat),
+      'start_lng': float(startlong),
+      'end_lat': float(endlat),
+      'end_lng': float(endlong),
     }
 
     response = requests.get(url, params=parameters)

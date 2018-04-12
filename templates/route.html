@@ -68,9 +68,9 @@
             data: userPath,
             success: function(exportUberPrice) {
                 console.log(exportUberPrice)
-                getUberPrice(
-                    jQuery.parseJSON(exportUberPrice)
-                );
+                // getUberPrice(
+                //     jQuery.parseJSON(exportUberPrice)
+                // );
             },
         });
     }
@@ -79,13 +79,14 @@
         $.ajax({
             url: '/lyft',
             type: 'POST',
-            contentType: "application/json",
+            ContentType: "application/json",
             data: userPath,
             success: function(exportLyftPrice) {
                 console.log(exportLyftPrice)
-                getLyftPrice(
-                    jQuery.parseJSON(exportLyftPrice)
-                );
+                return false
+                // getLyftPrice(
+                //     jQuery.parseJSON(exportLyftPrice)
+                // );
             },
         });
     }
