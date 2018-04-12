@@ -53,6 +53,62 @@ def sendPredictions():
     exportPrediction = json.dumps(returnPredictions)
     return jsonify(exportPrediction)
 
+def sendUber():
+    jsonFront = request.form.to_dict()
+    startlat = jsonFront["startlat"]
+    startlong = jsonFront["startlong"]
+    endlat = jsonFront["endlat"]
+    endlong = jsonFront["endlong"]
+
+    url = 'https://sandbox-api.lyft.com/v1/cost'
+
+    parameters = {
+      'access_token':'qSSLT3qEdTxEe+ORMu5uE3XNx1u/91b0PBdoEIVPcvgBAsg67gn890XT65jQusItWISKN538HYzlmE3tXZVeeC8ML6qMv/5xxYqgeGEeDCvrmlqdZbYvO0o=',
+      'start_latitude': float(startlat),
+      'start_longitude': float(startlong),
+      'end_latitude': float(endlat),
+      'end_longitude': float(endlong),
+    }
+#    url = 'https://sandbox-api.uber.com/v1/estimates/price'
+#
+#    parameters = {
+#      'server_token':'llbL_ENfT42zjRAxv8HYHuR_6qtr38eNGzx-OXj0',
+#      'start_latitude': float(startlat),
+#      'start_longitude': float(startlong),
+#      'end_latitude': float(endlat),
+#      'end_longitude': float(endlong),
+#    }
+
+    response = requests.get(url, params=parameters)
+
+    data = json.dumps( response.json(), indent=2 )
+
+    return jsonify(data)
+
+@app.route('/lyft', methods=['POST'])
+
+def sendLyft():
+    jsonFront = request.form.to_dict()
+    startlat = jsonFront["startlat"]
+    startlong = jsonFront["startlong"]
+    endlat = jsonFront["endlat"]
+    endlong = jsonFront["endlong"]
+
+    url = 'https://sandbox-api.lyft.com/v1/cost'
+
+    parameters = {
+      'access_token':'qSSLT3qEdTxEe+ORMu5uE3XNx1u/91b0PBdoEIVPcvgBAsg67gn890XT65jQusItWISKN538HYzlmE3tXZVeeC8ML6qMv/5xxYqgeGEeDCvrmlqdZbYvO0o=',
+      'start_latitude': float(startlat),
+      'start_longitude': float(startlong),
+      'end_latitude': float(endlat),
+      'end_longitude': float(endlong),
+    }
+
+    response = requests.get(url, params=parameters)
+
+    data = json.dumps( response.json(), indent=2 )
+    return jsonify(data)
+    
 def getStops(stopsJSON, direction):
 	stopsList = []
 	for i in range(len(stopsJSON["data"])):
