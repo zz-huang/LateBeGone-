@@ -55,26 +55,17 @@
             document.getElementById('destcityLng').value = place.geometry.location.lng();
             userPath["endlat"]=document.getElementById('destcityLat').value;
             userPath["endlong"]=document.getElementById('destcityLng').value;
-            //alert("This function is working!");
-            //alert(place.name);
-            // alert(place.address_components[0].long_name);
-
+            console.log(userPath )
         });
     }
     google.maps.event.addDomListener(window, 'load', initialize2);
+
     function getUberPrice(){
         $.ajax({
-            url: 'https://api.uber.com/v1/estimates/price?start_latitude=8.969145&start_longitude=-79.5177675&end_latitude=8.984104&end_longitude=-79.517467',
-            type: 'GET',
+            url: '/uber',
+            type: 'POST',
             ContentType: "application/json",
-            AcceptLanguage:'en_US',
-            headers: {
-                'Authorization': "Token " + "API_KEY",
-                // 'Accept-Language': 'en_US',
-                // 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'access-control-allow-headers, accept-Language, x-requested-With, authorization, content-type, access-control-allow-origin, access-control-allow-methods',
-            },
+            data: userPath,
             success: function(exportUberPrice) {
                 console.log(exportUberPrice)
                 getUberPrice(
@@ -86,14 +77,10 @@
 
     function getLyftPrice(){
         $.ajax({
-            url: 'https://api.lyft.com/v1/cost?start_lat=37.7763&start_lng=-122.3918&end_lat=37.7972&end_lng=-122.4533',
-            type: 'GET',
+            url: '/lyft',
+            type: 'POST',
             contentType: "application/json",
-            headers: {
-                'Authorization': "bearer " + "API_KEY",
-                'Access-Control-Allow-Origin': '*',
-                // 'Access-Control-Allow-Headers': 'access-control-allow-headers, accept-Language, x-requested-With, authorization, content-type, access-control-allow-origin, access-control-allow-methods'
-            },
+            data: userPath,
             success: function(exportLyftPrice) {
                 console.log(exportLyftPrice)
                 getLyftPrice(
@@ -551,7 +538,7 @@
         var tempItem = document.getElementById("routes_select").value;
         userRouteDirection["route"] = tempItem.split("-")[0];
         userRouteDirection["direction"] = tempItem.split("-")[1];
-        console.log(userRouteDirection);
+        // console.log("userRoute is" + userRouteDirection);
         // var deferredData = new jQuery.Deferred();
         $.ajax({
             url: '/stops',
