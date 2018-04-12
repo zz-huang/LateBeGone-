@@ -535,19 +535,30 @@
         direction: 0
     };
 
+    //record stop names
+    var userStop = {
+        "stop": 0,
+        "route": 0,
+        "direction": 0
+    };
+
     function setUserRouteToVariables() {
         var tempItem = document.getElementById("routes_select").value;
-        userRouteDirection["route"] = tempItem.split("-")[0];
-        userRouteDirection["direction"] = tempItem.split("-")[1];
-        // console.log("userRoute is" + userRouteDirection);
-        // var deferredData = new jQuery.Deferred();
+        if (tempItem.split("-").length==2) {
+            userRouteDirection["route"] = tempItem.split("-")[0];
+            userRouteDirection["direction"] = tempItem.split("-")[1];
+        }
+        else{
+            userRouteDirection["route"] = tempItem.split("-")[0] + "-"+ tempItem.split("-")[1];
+            userRouteDirection["direction"] = tempItem.split("-")[2];
+        }
         $.ajax({
             url: '/stops',
             type: 'POST',
             contentType: "application/json",
             data: JSON.stringify(userRouteDirection),
             success: function(exportStops) {
-                // console.log(exportStops)
+                console.log(exportStops)
                 helpers.buildDropdown(
                     jQuery.parseJSON(exportStops),
                     $('#stops_select'),
@@ -556,7 +567,8 @@
                 setUserStopToVariables(
                     jQuery.parseJSON(exportStops)
                 );
-                },
+                return false
+            },
         });
     }
 
@@ -579,13 +591,6 @@
             }
         }
 
-    //record stop names
-    var userStop = {
-        "stop": 0,
-        "route": 0,
-        "direction": 0
-    };
-
     function setUserStopToVariables(results) {
         var tempItem = document.getElementById("stops_select").value;
         console.log(tempItem)
@@ -606,6 +611,7 @@
                 setUserStopToVariables(
                     jQuery.parseJSON(exportPrediction)
                 );
+                return false
                 },
         });  
     }
