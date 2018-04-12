@@ -4,9 +4,19 @@ from flask import *
 
 app = Flask(__name__)
 
-# displays web form
+# displays main page
 @app.route('/', methods=['GET'])
-def index():
+def main_page():
+	return render_template('main.html')
+
+# displays login page
+@app.route('/login', methods=['GET'])
+def login_page():
+	return render_template('login.html')
+
+# displays route page
+@app.route('/route', methods=['GET'])
+def route_page():
 	return render_template('route.html')
 
 # when request for stop list is sent

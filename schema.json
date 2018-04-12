@@ -1,0 +1,19 @@
+{
+	"type":"object",
+	"properties": {
+		"local": {
+			"type":"object",
+			"properties": {
+				"username": {"type":"string"},
+				"password": {"type":"string"}
+			}
+		},
+		"twitter": {
+			"type":"object",
+			"properties": {
+				"username": {"type":"string"},
+				"password": {"type":"string"}
+			}
+		}
+	}
+}
