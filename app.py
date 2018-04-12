@@ -71,7 +71,7 @@ def sendUber():
     url = 'https://sandbox-api.uber.com/v1/estimates/price'
 
     parameters = {
-      'server_token':'llbL_ENfT42zjRAxv8HYHuR_6qtr38eNGzx-OXj0',
+      'server_token':'API_KEY',
       'start_latitude': float(startlat),
       'start_longitude': float(startlong),
       'end_latitude': float(endlat),
@@ -97,7 +97,7 @@ def sendLyft():
     url = 'https://api.lyft.com/v1/cost'
 
     parameters = {
-      'Authorization':'qSSLT3qEdTxEe+ORMu5uE3XNx1u/91b0PBdoEIVPcvgBAsg67gn890XT65jQusItWISKN538HYzlmE3tXZVeeC8ML6qMv/5xxYqgeGEeDCvrmlqdZbYvO0o=',
+      'Authorization':'API_KEY',
       'start_lat': float(startlat),
       'start_lng': float(startlong),
       'end_lat': float(endlat),
