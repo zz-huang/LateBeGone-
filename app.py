@@ -1,5 +1,6 @@
 import json
 import requests
+import os
 from flask import *
 from pymongo import MongoClient
 from jsonschema import validate, ValidationError
@@ -8,7 +9,7 @@ app = Flask(__name__)
 client = MongoClient()
 db = client['database411']
 
-# displays main page
+# displays web form
 @app.route('/', methods=['GET'])
 def main_page():
 	return render_template('main.html')
@@ -64,11 +65,16 @@ def route_page():
 @app.route('/stops', methods=['POST'])
 def sendStops():
 	jsonFront = request.get_json()
+	print (jsonFront)
 	route = jsonFront["route"]
 	direction = jsonFront["direction"]
 
+	parameters = {
+              'Key':'d12a26b5b2034ac0a364e7a8b36afbc1',
+        }
+
 	stopsURL = "https://api-v3.mbta.com/stops?filter%5Broute%5D=" + str(route)
-	stopsDATA = requests.get(stopsURL)
+	stopsDATA = requests.get(stopsURL,params=parameters)
 	stopsJSON = stopsDATA.json()
 
 	returnStops = getStops(stopsJSON, direction)
@@ -85,15 +91,70 @@ def sendPredictions():
     direction = jsonFront["direction"]
     direction_id = getDirectionID(direction)
 
-    predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]=" + str(stop)
-    predictionDATA = requests.get(predictionURL)
-    predictionJSON = predictionDATA.json()
+    parameters = {
+          'Key':'d12a26b5b2034ac0a364e7a8b36afbc1',
+    }
 
+    predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]=" + str(stop)
+    predictionDATA = requests.get(predictionURL, params=parameters)
+    predictionJSON = predictionDATA.json()
+    print (predictionJSON)
     returnPredictions = getPredictions(predictionJSON, route, direction_id)
 
     exportPrediction = json.dumps(returnPredictions)
+
     return jsonify(exportPrediction)
 
+@app.route('/uber', methods=['POST'])
+
+def sendUber():
+    jsonFront = request.form.to_dict()
+    startlat = jsonFront["startlat"]
+    startlong = jsonFront["startlong"]
+    endlat = jsonFront["endlat"]
+    endlong = jsonFront["endlong"]
+
+    url = 'https://sandbox-api.uber.com/v1/estimates/price'
+
+    parameters = {
+      'server_token':'API_KEY',
+      'start_latitude': float(startlat),
+      'start_longitude': float(startlong),
+      'end_latitude': float(endlat),
+      'end_longitude': float(endlong),
+    }
+
+    response = requests.get(url, params=parameters)
+
+    data = json.dumps( response.json(), indent=2 )
+
+    return jsonify(data)
+
+
+@app.route('/lyft', methods=['POST'])
+
+def sendLyft():
+    jsonFront = request.form.to_dict()
+    startlat = jsonFront["startlat"]
+    startlong = jsonFront["startlong"]
+    endlat = jsonFront["endlat"]
+    endlong = jsonFront["endlong"]
+
+    url = 'https://api.lyft.com/v1/cost'
+
+    parameters = {
+      'Authorization':'API_KEY',
+      'start_lat': float(startlat),
+      'start_lng': float(startlong),
+      'end_lat': float(endlat),
+      'end_lng': float(endlong),
+    }
+
+    response = requests.get(url, params=parameters)
+
+    data = json.dumps( response.json(), indent=2 )
+    return jsonify(data)
+    
 def getStops(stopsJSON, direction):
 	stopsList = []
 	for i in range(len(stopsJSON["data"])):
@@ -109,12 +170,14 @@ def getStops(stopsJSON, direction):
 def getPredictions(predictionJSON, route, direction_id):
     dataList = []
     for i in range(len(predictionJSON["data"])):
-        if (predictionJSON["data"][i]["relationships"]["route"]["data"]["id"] == route and
-            predictionJSON["data"][i]["attributes"]["direction_id"] == direction_id): #and counter<=3:
+        if (predictionJSON["data"][i]["relationships"]["route"]["data"]["id"] == route): #and
+#            predictionJSON["data"][i]["attributes"]["direction_id"] == direction_id):
             dataDict = {}
             dataDict["Next Arrival"] = predictionJSON["data"][i]["attributes"]["arrival_time"][11:19]
-            dataDict["Next Departure"] = predictionJSON["data"][i]["attributes"]["departure_time"][11:19]
+#            dataDict["Next Departure"] = predictionJSON["data"][i]["attributes"]["departure_time"][11:19]
             dataList.append(dataDict)
+#        id = getDirectionID(direction_id)
+#        dataList.append({"direction_id": id})
     return dataList
 
 def getOrder(stopsList, direction):
