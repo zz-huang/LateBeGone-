@@ -1,8 +1,12 @@
 import json
 import requests
 from flask import *
+from pymongo import MongoClient
+from jsonschema import validate, ValidationError
 
 app = Flask(__name__)
+client = MongoClient()
+db = client['database411']
 
 # displays main page
 @app.route('/', methods=['GET'])
@@ -10,8 +14,45 @@ def main_page():
 	return render_template('main.html')
 
 # displays login page
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['GET','POST'])
 def login_page():
+	
+	# ### following block validates account creations; will probably need to move/adjust
+	# if request.method == 'POST':
+	# 	with open('schema.json') as schema:
+	# 		schema = json.load(schema)
+	# 	try:
+	# 		new_user = request.get_json()
+	# 		validate(new_user, schema)
+	# 		'''
+	# 		local_pass_hash = hash(new_user["local"]["password"])
+	# 		new_user["local"]["password"] = local_pass_hash
+	# 		'''
+	# 		result = db.users.insert_one(new_user)
+	# 	except ValidationError:
+	# 		print('Schema Error: Incoming JSON could not be validated.')
+
+	# ### folowing block validates account logins; will probably need to move/adjust
+	# if request.method == 'POST':
+	# 	with open('schema.json') as schema:
+	# 		schema = json.load(schema)
+	# 	try:
+	# 		user = request.get_json()
+	# 		validate(user, schema)
+	# 		username = user["local"]["username"]
+	# 		result = db.users.find({"username": username})
+	# 		'''
+	# 		if no result:
+	# 			user does not exist in db, send alert
+			
+	# 		if hash(user["local"]["password"] = result["local"]["password"]):
+	# 			allow user to login
+	# 		else:
+	# 			send incorrect password alert
+	# 		'''
+	# 	except ValidationError:
+	# 		print('Schema Error: Incoming JSON could not be validated.')
+
 	return render_template('login.html')
 
 # displays route page
