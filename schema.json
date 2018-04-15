@@ -1,19 +1,20 @@
 {
 	"type":"object",
 	"properties": {
-		"local": {
+		"local": {								// user login credentials for app
 			"type":"object",
 			"properties": {
-				"username": {"type":"string"},
-				"password": {"type":"string"},
-				"phone": {"type":"string"}
+				"username": {"type":"string"},  // username
+				"password": {"type":"string"},  // password (hashed with SHA256)
+				"phone": {"type":"string"}      // phone number
 			}
-		} //,
-		// "twitter": {
+		}
+		// ,
+		// "twitter": {							// user login credentials for Twitter
 		// 	"type":"object",
 		// 	"properties": {
-		// 		"username": {"type":"string"},
-		// 		"password": {"type":"string"}
+		// 		"username": {"type":"string"},  // username
+		// 		"password": {"type":"string"}   // password (hashed with SHA256)
 		// 	}
 		// }
 	}

@@ -3,6 +3,7 @@ import requests
 import os
 import math
 import apikeys
+import hashlib
 
 from flask import *
 from pymongo import MongoClient
@@ -64,7 +65,6 @@ def login_page():
 def route_page():
 	return render_template('route.html')
 
-
 #http://realtime.mbta.com/developer/api/v2/stopsbyroute?api_key=<key>&route=Orange&format=json
 # when request for stop list is sent
 @app.route('/stops', methods=['POST'])
@@ -106,7 +106,6 @@ def sendPredictions():
     return jsonify(exportPrediction)
 
 @app.route('/uber', methods=['POST'])
-
 def sendUber():
     jsonFront = request.form.to_dict()
     startlat = jsonFront["startlat"]
@@ -130,7 +129,6 @@ def sendUber():
     return jsonify(data)
 
 @app.route('/lyft', methods=['POST'])
-
 def sendLyft():
     jsonFront = request.form.to_dict()
     startlat = jsonFront["startlat"]
@@ -231,6 +229,9 @@ def lyftSurge (surge, lowestimate, highestimate):
     low = float(lowestimate/100.00) * float(surge) + float(lowestimate/100.00)
     high = float(highestimate/100.00) * float(surge) + float(highestimate/100.00)
     return "$" + str(round(low,2))+ "-"+str(round(high,2))
+
+def hash(text):
+    return hashlib.sha256(text.encode()).hexdigest()
 
 if __name__ == '__main__':
     app.run(debug=True)
