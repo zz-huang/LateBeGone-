@@ -7,10 +7,12 @@
 
 </head>
 <body>
+<label>Starting Address</label>
 <input id="searchTextField" type="text" size="50" placeholder="Enter location" autocomplete="on" runat="server" />
 <input type="hidden" id="city2" name="city2" />
 <input type="hidden" id="cityLat" name="cityLat" />
 <input type="hidden" id="cityLng" name="cityLng" />
+<label>Enter Destination</label>
 <input id="destTextField" type="text" size="50" placeholder="Enter destination" autocomplete="on" runat="server" />
 <input type="hidden" id="destcity2" name="destcity2" />
 <input type="hidden" id="destcityLat" name="destcityLat" />
@@ -18,10 +20,21 @@
 
 
 <label>Get Estimates</label>
-<button onclick="getUberPrice();">Uber</button>
+<button onclick="getUberPrice(); getLyftPrice();">Get Comparison</button>
 <!--<label>Get Lyft Estimate</label>-->
-<button onclick="getLyftPrice();">Lyft</button>
+<!--<button onclick="getUberPrice();">Lyft</button>-->
 
+<table id="ubertbl" style="width:50%; float:left">
+    <tr>
+        <!--<td>Uber Prices</td>-->
+    </tr>
+</table>
+<table id="lyfttbl" style="width:50%; float:left">
+    <tr>
+        <!--<td>Lyft Prices</td>-->
+    </tr>
+</table>
+<br>
 
 <script type="text/javascript">
     var userPath = {
@@ -68,11 +81,41 @@
             data: userPath,
             success: function(exportUberPrice) {
                 console.log(exportUberPrice)
-                // getUberPrice(
-                //     jQuery.parseJSON(exportUberPrice)
-                // );
+                buildUberTables(
+                    (exportUberPrice),
+                );
+                return false
             },
         });
+    }
+
+    function buildUberTables(predictions) {
+        $("#ubertbl tr").remove();
+        var columns = addUberTables(predictions);
+        for (var i = 0; i < predictions.length; i++) {
+            var row$ = $('<tr/>');
+            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                var cellValue = predictions[i][columns[colIndex]];
+                if (cellValue == null) cellValue = "";
+                row$.append($('<td/>').html(cellValue));
+            }
+            $("#ubertbl").append(row$);
+        }
+    }
+    function addUberTables(predictions) {
+        var columnSet = [];
+        var headerTr$ = $('<tr/>');
+        for (var i = 0; i < predictions.length; i++) {
+            var rowHash = predictions[i];
+            for (var key in rowHash) {
+                if ($.inArray(key, columnSet) == -1) {
+                    columnSet.push(key);
+                    headerTr$.append($('<th/>').html(key));
+                }
+            }
+        }
+        $("#ubertbl").append(headerTr$);
+        return columnSet;
     }
 
     function getLyftPrice(){
@@ -83,12 +126,41 @@
             data: userPath,
             success: function(exportLyftPrice) {
                 console.log(exportLyftPrice)
+                buildLyftTables(
+                    (exportLyftPrice),
+                );
                 return false
-                // getLyftPrice(
-                //     jQuery.parseJSON(exportLyftPrice)
-                // );
             },
         });
+    }
+
+    function buildLyftTables(predictions) {
+        $("#lyfttbl tr").remove();
+        var columns = addLyftTables(predictions);
+        for (var i = 0; i < predictions.length; i++) {
+            var row$ = $('<tr/>');
+            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                var cellValue = predictions[i][columns[colIndex]];
+                if (cellValue == null) cellValue = "";
+                row$.append($('<td/>').html(cellValue));
+            }
+            $("#lyfttbl").append(row$);
+        }
+    }
+    function addLyftTables(predictions) {
+        var columnSet = [];
+        var headerTr$ = $('<tr/>');
+        for (var i = 0; i < predictions.length; i++) {
+            var rowHash = predictions[i];
+            for (var key in rowHash) {
+                if ($.inArray(key, columnSet) == -1) {
+                    columnSet.push(key);
+                    headerTr$.append($('<th/>').html(key));
+                }
+            }
+        }
+        $("lyfttbl").append(headerTr$);
+        return columnSet;
     }
 
 </script>
@@ -123,7 +195,7 @@
 
 <button onclick="setUserStopToVariables();">Save</button>
 <br>
-<button onclick="buildHtmlTable()">Predict</button>
+<!--<button onclick="buildHtmlTable()">Predict</button>-->
 <table id="prediction_table" border="1">
 </table>
 
@@ -558,18 +630,15 @@
             contentType: "application/json",
             data: JSON.stringify(userRouteDirection),
             success: function(exportStops) {
-                console.log(exportStops)
                 helpers.buildDropdown(
                     jQuery.parseJSON(exportStops),
                     $('#stops_select'),
                     'Select an option'
                 );
-                setUserStopToVariables(
-                    jQuery.parseJSON(exportStops)
-                );
                 return false
             },
         });
+
     }
 
     var helpers =
@@ -593,11 +662,9 @@
 
     function setUserStopToVariables(results) {
         var tempItem = document.getElementById("stops_select").value;
-        console.log(tempItem)
         userStop["stop"]=tempItem
         userStop["route"]=userRouteDirection["route"]
         userStop["direction"]=userRouteDirection["direction"]
-        console.log(userStop);
         $.ajax({
             url: '/prediction',
             type: 'POST',
@@ -608,15 +675,13 @@
                 buildHtmlTable(
                     jQuery.parseJSON(exportPrediction),
                 );
-                setUserStopToVariables(
-                    jQuery.parseJSON(exportPrediction)
-                );
                 return false
-                },
-        });  
+            },
+        });
     }
 
     function buildHtmlTable(predictions) {
+        $("#prediction_table tr").remove();
         var columns = addAllColumnHeaders(predictions);
         for (var i = 0; i < predictions.length; i++) {
             var row$ = $('<tr/>');
@@ -629,7 +694,6 @@
         }
     }
     function addAllColumnHeaders(predictions) {
-        console.log(predictions)
         var columnSet = [];
         var headerTr$ = $('<tr/>');
         for (var i = 0; i < predictions.length; i++) {

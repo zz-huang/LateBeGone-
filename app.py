@@ -1,6 +1,9 @@
 import json
 import requests
 import os
+import math
+import apikeys
+
 from flask import *
 from pymongo import MongoClient
 from jsonschema import validate, ValidationError
@@ -61,24 +64,24 @@ def login_page():
 def route_page():
 	return render_template('route.html')
 
+
+#http://realtime.mbta.com/developer/api/v2/stopsbyroute?api_key=<key>&route=Orange&format=json
 # when request for stop list is sent
 @app.route('/stops', methods=['POST'])
 def sendStops():
 	jsonFront = request.get_json()
-	print (jsonFront)
+#	print (jsonFront)
 	route = jsonFront["route"]
 	direction = jsonFront["direction"]
 
-	parameters = {
-              'Key':'d12a26b5b2034ac0a364e7a8b36afbc1',
-        }
+	mbtakey = apikeys.mbta_key
 
-	stopsURL = "https://api-v3.mbta.com/stops?filter%5Broute%5D=" + str(route)
-	stopsDATA = requests.get(stopsURL,params=parameters)
+	stopsURL = "https://api-v3.mbta.com/stops?api_key="+ (mbtakey)+"&filter%5Broute%5D=" + str(route)
+	stopsDATA = requests.get(stopsURL)
 	stopsJSON = stopsDATA.json()
 
 	returnStops = getStops(stopsJSON, direction)
-	
+
 	exportStops = json.dumps(returnStops)
 	return jsonify(exportStops)
 
@@ -91,14 +94,11 @@ def sendPredictions():
     direction = jsonFront["direction"]
     direction_id = getDirectionID(direction)
 
-    parameters = {
-          'Key':'d12a26b5b2034ac0a364e7a8b36afbc1',
-    }
+    mbtakey = apikeys.mbta_key
 
-    predictionURL = "https://api-v3.mbta.com/predictions?filter[stop]=" + str(stop)
-    predictionDATA = requests.get(predictionURL, params=parameters)
+    predictionURL = "https://api-v3.mbta.com/predictions?api_key="+ (mbtakey)+"&filter[stop]=" + str(stop)
+    predictionDATA = requests.get(predictionURL)
     predictionJSON = predictionDATA.json()
-    print (predictionJSON)
     returnPredictions = getPredictions(predictionJSON, route, direction_id)
 
     exportPrediction = json.dumps(returnPredictions)
@@ -117,7 +117,7 @@ def sendUber():
     url = 'https://sandbox-api.uber.com/v1/estimates/price'
 
     parameters = {
-      'server_token':'API_KEY',
+      'server_token': apikeys.uber_key,
       'start_latitude': float(startlat),
       'start_longitude': float(startlong),
       'end_latitude': float(endlat),
@@ -125,11 +125,9 @@ def sendUber():
     }
 
     response = requests.get(url, params=parameters)
-
-    data = json.dumps( response.json(), indent=2 )
+    data = getUberPrices(response.json())
 
     return jsonify(data)
-
 
 @app.route('/lyft', methods=['POST'])
 
@@ -143,7 +141,7 @@ def sendLyft():
     url = 'https://api.lyft.com/v1/cost'
 
     parameters = {
-      'Authorization':'API_KEY',
+      'Authorization': apikeys.lyft_key,
       'start_lat': float(startlat),
       'start_lng': float(startlong),
       'end_lat': float(endlat),
@@ -151,10 +149,9 @@ def sendLyft():
     }
 
     response = requests.get(url, params=parameters)
-
-    data = json.dumps( response.json(), indent=2 )
+    data = getLyftPrices(response.json())
     return jsonify(data)
-    
+
 def getStops(stopsJSON, direction):
 	stopsList = []
 	for i in range(len(stopsJSON["data"])):
@@ -170,14 +167,9 @@ def getStops(stopsJSON, direction):
 def getPredictions(predictionJSON, route, direction_id):
     dataList = []
     for i in range(len(predictionJSON["data"])):
-        if (predictionJSON["data"][i]["relationships"]["route"]["data"]["id"] == route): #and
-#            predictionJSON["data"][i]["attributes"]["direction_id"] == direction_id):
-            dataDict = {}
-            dataDict["Next Arrival"] = predictionJSON["data"][i]["attributes"]["arrival_time"][11:19]
-#            dataDict["Next Departure"] = predictionJSON["data"][i]["attributes"]["departure_time"][11:19]
-            dataList.append(dataDict)
-#        id = getDirectionID(direction_id)
-#        dataList.append({"direction_id": id})
+        dataDict = {}
+        dataDict["Next Arrival"] = predictionJSON["data"][i]["attributes"]["arrival_time"][11:19]
+        dataList.append(dataDict)
     return dataList
 
 def getOrder(stopsList, direction):
@@ -194,7 +186,51 @@ def getDirectionID(direction):
 	if direction in zero:
 		return 0
 	if direction in one:
-		return 1		
+		return 1
+
+def getUberPrices (uberJSON):
+    uberList = []
+    # carDict={}
+    cars = ["POOL", "uberX", "uberXL"]
+    for i in range(len(uberJSON['prices'])-1):
+        if uberJSON['prices'][i]['display_name'] in cars:
+            entry={}
+            name = uberJSON["prices"][i]["display_name"]
+            highestimate = uberJSON["prices"][i]["high_estimate"]
+            lowestimate = uberJSON["prices"][i]["low_estimate"]
+            surge = uberJSON["prices"][i]["surge_multiplier"]
+            price = uberSurge(surge, lowestimate, highestimate)
+            entry["name"]=name
+            entry["price"]=price
+            uberList.append(entry)
+    return uberList
+
+def uberSurge (surge, lowestimate, highestimate):
+    low = float(lowestimate) * float(surge)
+    high = float(highestimate) * float(surge)
+    return "$" + str(round(low,2))+ "-"+str(round(high,2))
+
+def getLyftPrices (lyftJSON):
+    lyftList = []
+    cars = ["lyft_line", "lyft", "lyft_plus"]
+    for i in range(len(lyftJSON["cost_estimates"])):
+        if lyftJSON['cost_estimates'][i]['ride_type'] in cars:
+            entry={}
+            name = lyftJSON["cost_estimates"][i]["ride_type"]
+            highestimate = lyftJSON["cost_estimates"][i]["estimated_cost_cents_max"]
+            lowestimate = lyftJSON["cost_estimates"][i]["estimated_cost_cents_min"]
+            surge = lyftJSON["cost_estimates"][i]["primetime_percentage"][:-1]
+            price = lyftSurge(surge, lowestimate, highestimate)
+            entry["name"]=name
+            entry["price"]=price
+            lyftList.append(entry)
+    return lyftList
+
+def lyftSurge (surge, lowestimate, highestimate):
+    surge = "0."+str(surge)
+    low = float(lowestimate/100.00) * float(surge) + float(lowestimate/100.00)
+    high = float(highestimate/100.00) * float(surge) + float(highestimate/100.00)
+    return "$" + str(round(low,2))+ "-"+str(round(high,2))
 
 if __name__ == '__main__':
     app.run(debug=True)
