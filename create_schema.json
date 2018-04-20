@@ -1,0 +1,12 @@
+{
+	"type":"object",
+	"properties": {
+		"local": {								// user login credentials for app
+			"type":"object",
+			"properties": {
+				"username": {"type":"string"},  // username
+				"password": {"type":"string"},  // password (hashed with SHA256)
+				"phone": {"type":"string"}      // phone number
+			}
+		}
+}
