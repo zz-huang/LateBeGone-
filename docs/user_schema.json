@@ -8,14 +8,13 @@
 				"password": {"type":"string"},  // password (hashed with SHA256)
 				"phone": {"type":"string"}      // phone number
 			}
+		},
+		"twitter": {							// user login credentials for Twitter
+			"type":"object",
+			"properties": {
+				"username": {"type":"string"},  // username
+				"password": {"type":"string"}   // password (hashed with SHA256)
+			}
 		}
-		// ,
-		// "twitter": {							// user login credentials for Twitter
-		// 	"type":"object",
-		// 	"properties": {
-		// 		"username": {"type":"string"},  // username
-		// 		"password": {"type":"string"}   // password (hashed with SHA256)
-		// 	}
-		// }
 	}
 }

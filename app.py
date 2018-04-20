@@ -23,20 +23,21 @@ def main_page():
 @app.route('/login', methods=['GET','POST'])
 def login_page():
     if request.method == 'POST':
-        with open('schema.json') as schema:
+        with open('login_schema.json') as schema:
             schema = json.load(schema)
         try:
             user = request.get_json()
             username = user["local"]["username"]
             result = db.users.find({"username": username})
-            '''
-            if no result:
-                user does not exist in db, send alert
-            if hash(user["local"]["password"] = result["local"]["password"]):
-                allow user to login
+            
+            if result.count() == 0:
+                print("User does not exist in db")
+            elif hash(user["local"]["password"] = result["local"]["password"]):
+                print("Login was successful")
+                return redirect('/')
             else:
-                send incorrect password alert
-            '''
+                print("Password was incorrect")
+
         except ValidationError:
             print('Schema Error: Incoming JSON could not be validated.')
 
@@ -47,11 +48,12 @@ def create_page():
     if request.method == 'POST':
         new_user = request.get_json()
 
-        '''
-        if username already exists, handle
-        '''
+        check = db.users.find({"username": username})
+        if check.count() != 0:
+            print("Username already exists")
+            return redirect('/create')
 
-        with open('schema.json') as schema:
+        with open('create_schema.json') as schema:
             schema = json.load(schema)
         try:
             validate(new_user, schema)
@@ -232,8 +234,10 @@ def lyftSurge (surge, lowestimate, highestimate):
     high = float(highestimate/100.00) * float(surge) + float(highestimate/100.00)
     return "$" + str(round(low,2))+ "-"+str(round(high,2))
 
+def sendText():
+
 def hash(text):
-    return hashlib.sha256(text.encode()).hexdigest()
+    return hashlib.sha256(text.encode()).hexdigest() 
 
 if __name__ == '__main__':
     app.run(debug=True)
