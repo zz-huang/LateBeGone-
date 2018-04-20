@@ -234,7 +234,17 @@ def lyftSurge (surge, lowestimate, highestimate):
     high = float(highestimate/100.00) * float(surge) + float(highestimate/100.00)
     return "$" + str(round(low,2))+ "-"+str(round(high,2))
 
-def sendText():
+# def sendText():
+#     account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+#     auth_token = "your_auth_token"
+
+#     twilioClient = Client(account_sid, auth_token)
+
+#     twilioClient.api.account.messages.create(
+#         to=,  ## user's phone number
+#         from_=, ## our phone number
+#         body="The train is coming in 5 minutes! Get going!"
+#     )
 
 def hash(text):
     return hashlib.sha256(text.encode()).hexdigest() 
