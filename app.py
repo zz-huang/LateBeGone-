@@ -258,8 +258,8 @@ def sendText(arrival_time):
 
     if diff < 300:
         twilioClient.api.account.messages.create(
-            to= "+16178514141",
-            from_= "+18574036053",
+            to= apikeys.mynum,
+            from_= apikeys.twilionum,
             body="The MBTA is coming in " + tdelta + "minutes at " + str(arrival_time) + "! Get going!"
         )
     else:
@@ -274,8 +274,8 @@ def delayText(arrival_time,x):
 
     sleep(x)
     twilioClient.api.account.messages.create(
-                to= "+16178514141",
-                from_= "+18574036053",
+                to= apikeys.mynum,
+                from_= apikeys.twilionum,
                 body="The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
             )
 
