@@ -4,8 +4,11 @@ import os
 import math
 import apikeys
 import hashlib
+<<<<<<< HEAD
 import time
 import threading
+=======
+>>>>>>> 41e6034f109a32174d21204ab6783b35f30f77b6
 
 from datetime import datetime
 from time import sleep
@@ -33,7 +36,11 @@ def login_page():
             user = request.get_json()
             username = user["local"]["username"]
             result = db.users.find({"username": username})
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 41e6034f109a32174d21204ab6783b35f30f77b6
             if result.count() == 0:
                 print("User does not exist in db")
             elif hash(user["local"]["password"] = result["local"]["password"]):
@@ -242,6 +249,7 @@ def lyftSurge (surge, lowestimate, highestimate):
     high = float(highestimate/100.00) * float(surge) + float(highestimate/100.00)
     return "$" + str(round(low,2))+ "-"+str(round(high,2))
 
+<<<<<<< HEAD
 def sendText(arrival_time):
     account_sid = apikeys.twilio_sid
     auth_token = apikeys.twilio_auth
@@ -282,6 +290,22 @@ def delayText(arrival_time,x):
 
 def hash(text):
     return hashlib.sha256(text.encode()).hexdigest()
+=======
+# def sendText():
+#     account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+#     auth_token = "your_auth_token"
+
+#     twilioClient = Client(account_sid, auth_token)
+
+#     twilioClient.api.account.messages.create(
+#         to=,  ## user's phone number
+#         from_=, ## our phone number
+#         body="The train is coming in 5 minutes! Get going!"
+#     )
+
+def hash(text):
+    return hashlib.sha256(text.encode()).hexdigest() 
+>>>>>>> 41e6034f109a32174d21204ab6783b35f30f77b6
 
 if __name__ == '__main__':
     app.run(debug=True)
