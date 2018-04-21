@@ -4,7 +4,11 @@ import os
 import math
 import apikeys
 import hashlib
+import time
+import threading
 
+from datetime import datetime
+from time import sleep
 from flask import *
 from pymongo import MongoClient
 from jsonschema import validate, ValidationError
@@ -29,7 +33,7 @@ def login_page():
             user = request.get_json()
             username = user["local"]["username"]
             result = db.users.find({"username": username})
-            
+
             if result.count() == 0:
                 print("User does not exist in db")
             elif hash(user["local"]["password"] = result["local"]["password"]):
@@ -103,6 +107,8 @@ def sendPredictions():
     predictionURL = "https://api-v3.mbta.com/predictions?api_key="+ (mbtakey)+"&filter[stop]=" + str(stop)
     predictionDATA = requests.get(predictionURL)
     predictionJSON = predictionDATA.json()
+
+    print(predictionJSON)
     returnPredictions = getPredictions(predictionJSON, route, direction_id)
 
     exportPrediction = json.dumps(returnPredictions)
@@ -172,6 +178,8 @@ def getPredictions(predictionJSON, route, direction_id):
         dataDict = {}
         dataDict["Next Arrival"] = predictionJSON["data"][i]["attributes"]["arrival_time"][11:19]
         dataList.append(dataDict)
+        if (i==0):
+            sendText(predictionJSON["data"][i]["attributes"]["arrival_time"][11:19])
     return dataList
 
 def getOrder(stopsList, direction):
@@ -234,20 +242,46 @@ def lyftSurge (surge, lowestimate, highestimate):
     high = float(highestimate/100.00) * float(surge) + float(highestimate/100.00)
     return "$" + str(round(low,2))+ "-"+str(round(high,2))
 
-# def sendText():
-#     account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-#     auth_token = "your_auth_token"
+def sendText(arrival_time):
+    account_sid = apikeys.twilio_sid
+    auth_token = apikeys.twilio_auth
 
-#     twilioClient = Client(account_sid, auth_token)
+    twilioClient = Client(account_sid, auth_token)
 
-#     twilioClient.api.account.messages.create(
-#         to=,  ## user's phone number
-#         from_=, ## our phone number
-#         body="The train is coming in 5 minutes! Get going!"
-#     )
+    ct=time.ctime()
+    ct=ct[11:19]
+
+    FMT = '%H:%M:%S'
+    tdelta = datetime.strptime(arrival_time, FMT) - datetime.strptime(ct, FMT)
+    tdelta= str(tdelta)
+    diff= (sum(int(tdelta) * 60 ** i for i,tdelta in enumerate(reversed(tdelta.split(":")))))
+
+    if diff < 300:
+        twilioClient.api.account.messages.create(
+            to= "+16178514141",
+            from_= "+18574036053",
+            body="The MBTA is coming in " + tdelta + "minutes at " + str(arrival_time) + "! Get going!"
+        )
+    else:
+        download_thread = threading.Thread(target=delayText, args= (arrival_time,diff))
+        download_thread.start()
+
+def delayText(arrival_time,x):
+    account_sid = apikeys.twilio_sid
+    auth_token = apikeys.twilio_auth
+
+    twilioClient = Client(account_sid, auth_token)
+
+    sleep(x)
+    twilioClient.api.account.messages.create(
+                to= "+16178514141",
+                from_= "+18574036053",
+                body="The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
+            )
+
 
 def hash(text):
-    return hashlib.sha256(text.encode()).hexdigest() 
+    return hashlib.sha256(text.encode()).hexdigest()
 
 if __name__ == '__main__':
     app.run(debug=True)
