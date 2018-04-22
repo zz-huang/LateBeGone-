@@ -84,9 +84,21 @@ def sendStops():
 
 	mbtakey = apikeys.mbta_key
 
-	stopsURL = "https://api-v3.mbta.com/stops?api_key="+ (mbtakey)+"&filter%5Broute%5D=" + str(route)
-	stopsDATA = requests.get(stopsURL)
-	stopsJSON = stopsDATA.json()
+    cacheCheck = db.cache.find({"route": route})
+    if cacheCheck.count() != 0:
+        stopsJSON = cacheCheck["json"]
+    else:
+        emptyCache() # this ensures only 1 route is cached at a time
+    	stopsURL = "https://api-v3.mbta.com/stops?api_key="+str(mbtakey)+"&filter%5Broute%5D=" + str(route)
+    	stopsDATA = requests.get(stopsURL)
+    	stopsJSON = stopsDATA.json()
+        # store in database 'cache' collection
+        cacheInsert = db.cache.insert_one(
+            {
+                "route": route,
+                "json": stopsJSON
+            }
+        )
 
 	returnStops = getStops(stopsJSON, direction)
 
@@ -279,6 +291,13 @@ def delayText(arrival_time,x):
                 body="The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
             )
 
+def emptyCache():
+    result = db.cache.find()
+    if result.count() == 0:
+        print("Cache already empty")
+    else:
+        result = db.restaurants.delete_many({})
+        print("Cache emptied of {} documents".format(result.deleted_count))
 
 def hash(text):
     return hashlib.sha256(text.encode()).hexdigest()
