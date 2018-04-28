@@ -8,8 +8,6 @@
   
   <link rel="stylesheet" href="../static/login.css">
 
-
-
 </head>
 <body>
  <div class="login-screen">
@@ -31,10 +29,10 @@
         <input required="required" type="tel" value="XXX-XXX-XXXX" id="phone" name="phone" size="10" />
       </div>       </div>
 
-      <!-- <button onclick="createformtojson();">Create</button> -->
 
       <div class="submit">
-       <input type="submit" id="btn" name="btn" class="btn" value="Submit" />
+       <!--<input type="submit " id="#btn" name="#btn" class="#btn" value="Submit" /> -->
+       <button onclick="accounttojson();">Save</button> 
      </div>
      <span class="elements">Press "Ctrl + Shift + J" to see sent JSON in console: <span>
      </fieldset>
@@ -45,40 +43,40 @@
  </div>
 
 
- <script type="text/javascript">
-  $(document).ready(function() {
-    $("#btn").click(function(e){
-     var jsonData = {};
-
-     var formData = $("#myform").serializeArray();
-  // console.log(formData);
-
-  $.each(formData, function() {
-    if (jsonData[this.name]) {
-     if (!jsonData[this.name].push) {
-       jsonData[this.name] = [jsonData[this.name]];
-     }
-     jsonData[this.name].push(this.value || '');
-   } else {
-     jsonData[this.name] = this.value || '';
-   }
-
-
- });
-  console.log(jsonData);
-  $.ajax(
+ <script >
+  var list=
   {
-    url : "/create",
-    type: "POST",
-    contentType: "application/json",
-    data : JSON.stringify(jsonData),
-         success: function(exportStops) {
+    "username": 0,
+    "password": 0,
+    "phone": 0
+  };   
+  var creat_account_json = 
+    { "local": 0};
+  function accounttojson() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var phone = document.getElementById("phone").value;
+
+    list["username"] = username;
+    list["password"] = password;
+    list["phone"] = phone;
+    creat_account_json["local"]=list;
+    
+      $.ajax(
+      {
+        url : "/create",
+        type: "POST",
+        contentType: "application/json",
+        data : JSON.stringify(creat_account_json),
+        success: function(exportStops) {
           console.log(exportStops)
 
-  });
-  e.preventDefault(); 
-});
-  });
+        });
+    }
+
+
+
+
 </script>
 
     </body>
