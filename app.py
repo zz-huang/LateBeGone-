@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import json
 import requests
 import os
@@ -15,10 +17,42 @@ mongoClient = MongoClient()
 db = mongoClient['database411']
 
 # displays web form
-@app.route('/', methods=['GET'])
-def main_page():
-	return render_template('main.html')
+#@app.route('/', methods=['GET'])
+#def main_page():
+#	return render_template('main.html')
 
+## displays login page
+#@app.route('/login', methods=['GET','POST'])
+#def login_page():
+#    if request.method == 'POST':
+#        with open('login_schema.json') as schema:
+#            schema = json.load(schema)
+#        try:
+#            user = request.get_json()
+#            username = user["local"]["username"]
+#            result = db.users.find({"username": username})
+#
+#            if result.count() == 0:
+#                print("User does not exist in db")
+#            elif hash(user["local"]["password"] = result["local"]["password"]):
+#                print("Login was successful")
+#                return redirect('/')
+#            else:
+#                print("Password was incorrect")
+#
+#        except ValidationError:
+#            print('Schema Error: Incoming JSON could not be validated.')
+#
+#    return render_template('login.html')
+
+# coding: utf-8
+
+from flask import Flask
+from flask import g, session, request, url_for, flash
+from flask import redirect, render_template
+from flask_oauthlib.client import OAuth
+
+<<<<<<< Updated upstream
 # displays login page
 @app.route('/login', methods=['GET','POST'])
 def login_page():
@@ -37,11 +71,96 @@ def login_page():
                 return redirect('/')
             else:
                 print("Password was incorrect")
+=======
+>>>>>>> Stashed changes
 
-        except ValidationError:
-            print('Schema Error: Incoming JSON could not be validated.')
+app = Flask(__name__)
+app.debug = True
+app.secret_key = 'development'
 
-    return render_template('login.html')
+oauth = OAuth(app)
+
+twitter = oauth.remote_app(
+    'twitter',
+    consumer_key='xBeXxg9lyElUgwZT6AZ0A',
+    consumer_secret='aawnSpNTOVuDCjx7HMh6uSXetjNN8zWLpZwCEU4LBrk',
+    base_url='https://api.twitter.com/1.1/',
+    request_token_url='https://api.twitter.com/oauth/request_token',
+    access_token_url='https://api.twitter.com/oauth/access_token',
+    authorize_url='https://api.twitter.com/oauth/authorize'
+)
+
+
+@twitter.tokengetter
+def get_twitter_token():
+    if 'twitter_oauth' in session:
+        resp = session['twitter_oauth']
+        return resp['oauth_token'], resp['oauth_token_secret']
+
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'twitter_oauth' in session:
+        g.user = session['twitter_oauth']
+
+
+@app.route('/')
+def index():
+    tweets = None
+    if g.user is not None:
+        resp = twitter.request('statuses/home_timeline.json')
+        if resp.status == 200:
+            tweets = resp.data
+        else:
+            flash('Unable to load tweets from Twitter.')
+    return render_template('main.html', tweets=tweets)
+
+
+@app.route('/tweet', methods=['POST'])
+def tweet():
+    if g.user is None:
+        return redirect(url_for('login', next=request.url))
+    status = request.form['tweet']
+    if not status:
+        return redirect(url_for('index'))
+    resp = twitter.post('statuses/update.json', data={
+        'status': status
+    })
+
+    if resp.status == 403:
+        flash("Error: #%d, %s " % (
+            resp.data.get('errors')[0].get('code'),
+            resp.data.get('errors')[0].get('message'))
+        )
+    elif resp.status == 401:
+        flash('Authorization error with Twitter.')
+    else:
+        flash('Successfully tweeted your tweet (ID: #%s)' % resp.data['id'])
+    return redirect(url_for('index'))
+
+
+@app.route('/login')
+def login():
+    callback_url = url_for('oauthorized', next=request.args.get('next'))
+    return twitter.authorize(callback=callback_url or request.referrer or None)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('twitter_oauth', None)
+    return redirect(url_for('index'))
+
+
+@app.route('/oauthorized')
+def oauthorized():
+    resp = twitter.authorized_response()
+    if resp is None:
+        flash('You denied the request to sign in.')
+    else:
+        session['twitter_oauth'] = resp
+    return redirect(url_for('index'))
+
 
 @app.route('/create', methods=['GET','POST'])
 def create_page():
@@ -170,8 +289,17 @@ def getPredictions(predictionJSON, route, direction_id):
     dataList = []
     for i in range(len(predictionJSON["data"])):
         dataDict = {}
-        dataDict["Next Arrival"] = predictionJSON["data"][i]["attributes"]["arrival_time"][11:19]
+        try:
+            dataDict["Next Arrival"] = predictionJSON["data"][i]["attributes"]["arrival_time"][11:19]
+        except:
+            dataDict["Next Arrival"] = "No prediction found."
         dataList.append(dataDict)
+<<<<<<< Updated upstream
+=======
+        if (i == 0):
+            firstPrediction = predictionJSON["data"][i]["attributes"]["departure_time"][11:19]
+            sendText(firstPrediction)
+>>>>>>> Stashed changes
     return dataList
 
 def getOrder(stopsList, direction):
@@ -234,11 +362,51 @@ def lyftSurge (surge, lowestimate, highestimate):
     high = float(highestimate/100.00) * float(surge) + float(highestimate/100.00)
     return "$" + str(round(low,2))+ "-"+str(round(high,2))
 
+<<<<<<< Updated upstream
 # def sendText():
 #     account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 #     auth_token = "your_auth_token"
 
 #     twilioClient = Client(account_sid, auth_token)
+=======
+def sendText(arrival_time):
+    account_sid = apikeys.twilio_sid
+    auth_token = apikeys.twilio_auth
+
+    twilioClient = Client(account_sid, auth_token)
+
+    ct=time.ctime()
+    ct=ct[11:19]
+
+    FMT = '%H:%M:%S'
+    tdelta = datetime.strptime(arrival_time, FMT) - datetime.strptime(ct, FMT)
+    tdelta= str(tdelta)
+    diff= (sum(int(tdelta) * 60 ** i for i,tdelta in enumerate(reversed(tdelta.split(":")))))
+
+    if diff < 300:
+        twilioClient.api.account.messages.create(
+            to= apikeys.mynum,
+            from_= apikeys.twilionum,
+            body="The MBTA is coming in " + tdelta + "minutes at " + str(arrival_time) + "! Get going!"
+        )
+    else:
+        download_thread = threading.Thread(target=delayText, args= (arrival_time,diff))
+        download_thread.start()
+
+def delayText(arrival_time,x):
+
+    account_sid = apikeys.twilio_sid
+    auth_token = apikeys.twilio_auth
+
+    twilioClient = Client(account_sid, auth_token)
+
+    sleep(x-300)
+    twilioClient.api.account.messages.create(
+                to= apikeys.mynum,
+                from_= apikeys.twilionum,
+                body="The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
+            )
+>>>>>>> Stashed changes
 
 #     twilioClient.api.account.messages.create(
 #         to=,  ## user's phone number
