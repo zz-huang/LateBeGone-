@@ -20,7 +20,7 @@
     <fieldset>
       <div class="elements">
         <label for="name">Username:</label>
-        <input  required="required" type="text"  value="username" name="username"  size="20"  />
+        <input  required="required" type="text"  value="name" name="name"  size="20"  />
       </div> 
       <div class="elements">
         <label for="password">Password:</label>
@@ -70,7 +70,10 @@
   {
     url : "/create",
     type: "POST",
-    data : jsonData,
+    contentType: "application/json",
+    data : JSON.stringify(jsonData),
+         success: function(exportStops) {
+          console.log(exportStops)
 
   });
   e.preventDefault(); 
@@ -78,41 +81,6 @@
   });
 </script>
 
-    <!--<script>
-
-         var register_info ={
-        username:0 ,  // username
-        password: 0,  // password (hashed with SHA256)
-        phone: 0     // phone number
-      };
-
-
-        function send_register_info() {
-          document.getElementById("register-form").submit();
-                register_info["username"]=document.getElementById('register-name').value;
-                register_info["password"]document.getElementById('register-password').value;
-                register_info["phone"]document.getElementById('register-phone').value;
-
-            $.ajax({
-            url: '/create',
-            type: 'POST',
-            contentType: "application/json",
-            data: JSON.stringify(register_info),
-            success: function(createaccount) {
-                
-                    jQuery.parseJSON(exportStops),
-                    $('#stops_select'),
-                    'Select an option'
-                    );
-                return false
-            },
-        });
-
-    }
-        }
-
-
-      </script>-->
     </body>
 
     </html>
