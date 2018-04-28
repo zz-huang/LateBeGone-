@@ -3,79 +3,79 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Create an Account</title>
+  <title>Create</title>
   
   
-      <link rel="stylesheet" href="../static/login.css">
+  <link rel="stylesheet" href="../static/login.css">
 
 
 
 </head>
 <body>
  <div class="login-screen">
-          <div class="app-title">
-        <h1>Create an Account</h1>
-      </div>
-    <form id="myform" type="post">
-      <fieldset>
-    <div class="elements">
-      <label for="name">username :</label>
-      <input  required="required" type="text"  value="username" name="fname"  size="20"  />
-    </div>
-     <div class="elements">
-      <label for="password">password :</label>
-      <input required="required" type="text" value="numbers and letters" id="age" name="age" size="10" />
-    </div>  
-    <div class="elements">
-      <label for="phone"> phone number :</label>
-     <input required="required" type="tel" value="XXX-XXX-XXXX" id="age" name="age" size="10" />
-    </div>      
-               
+  <div class="app-title">
+    <h1>Create an Account</h1>
+  </div>
+  <form id="myform" type="post">
+    <fieldset>
+      <div class="elements">
+        <label for="name">Username:</label>
+        <input  required="required" type="text"  value="username" name="username"  size="20"  />
+      </div> 
+      <div class="elements">
+        <label for="password">Password:</label>
+        <input required="required" type="text" value="password" id="password" name="password" size="10" />
+      </div>   
+      <div class="elements">
+        <label for="phone">Phone number:</label>
+        <input required="required" type="tel" value="XXX-XXX-XXXX" id="phone" name="phone" size="10" />
+      </div>       </div>
+
       <!-- <button onclick="createformtojson();">Create</button> -->
- 
-    <div class="submit">
+
+      <div class="submit">
        <input type="submit" id="btn" name="btn" class="btn" value="Submit" />
-    </div>
-    <span class="elements">Press "Ctrl + Shift + J" to see sent JSON in console: <span>
-  </fieldset>
+     </div>
+     <span class="elements">Press "Ctrl + Shift + J" to see sent JSON in console: <span>
+     </fieldset>
 
-          <br>
+     <br>
 
-</form>
-</div>
+   </form>
+ </div>
 
 
-<script type="text/javascript">
+ <script type="text/javascript">
   $(document).ready(function() {
-  $("#btn").click(function(e){
+    $("#btn").click(function(e){
      var jsonData = {};
 
-   var formData = $("#myform").serializeArray();
+     var formData = $("#myform").serializeArray();
   // console.log(formData);
 
-   $.each(formData, function() {
-        if (jsonData[this.name]) {
-           if (!jsonData[this.name].push) {
-               jsonData[this.name] = [jsonData[this.name]];
-           }
-           jsonData[this.name].push(this.value || '');
-       } else {
-           jsonData[this.name] = this.value || '';
-       }
+  $.each(formData, function() {
+    if (jsonData[this.name]) {
+     if (!jsonData[this.name].push) {
+       jsonData[this.name] = [jsonData[this.name]];
+     }
+     jsonData[this.name].push(this.value || '');
+   } else {
+     jsonData[this.name] = this.value || '';
+   }
 
 
-   });
-   console.log(jsonData);
-    $.ajax(
-    {
-        url : "/create",
-        type: "POST",
-        data : jsonData,
+ });
+  console.log(jsonData);
+  $.ajax(
+  {
+    url : "/create",
+    type: "POST",
+    data : jsonData,
 
-    });
-    e.preventDefault(); 
+  });
+  e.preventDefault(); 
 });
-});
+  });
 </script>
 
     <!--<script>
@@ -112,7 +112,7 @@
         }
 
 
-</script>-->
-</body>
+      </script>-->
+    </body>
 
-</html>
+    </html>

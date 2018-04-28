@@ -31,7 +31,12 @@ text-align: center;
 .control-group {
 margin-bottom: 10px;
 }
- 
+.elements{
+margin-bottom: 10px;
+text-align: center;
+}
+
+
 input {
 text-align: center;
 background-color: #ECF0F1;
