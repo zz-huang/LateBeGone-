@@ -54,6 +54,7 @@ from flask_oauthlib.client import OAuth
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # displays login page
 @app.route('/login', methods=['GET','POST'])
 def login_page():
@@ -72,6 +73,8 @@ def login_page():
                 return redirect('/')
             else:
                 print("Password was incorrect")
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -299,6 +302,12 @@ def getPredictions(predictionJSON, route, direction_id):
         dataList.append(dataDict)
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+        if (i == 0):
+            firstPrediction = predictionJSON["data"][i]["attributes"]["departure_time"][11:19]
+            sendText(firstPrediction)
+>>>>>>> Stashed changes
 =======
         if (i == 0):
             firstPrediction = predictionJSON["data"][i]["attributes"]["departure_time"][11:19]
