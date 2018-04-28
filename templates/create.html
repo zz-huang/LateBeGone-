@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Create an Account</title>
+  
+  
+      <link rel="stylesheet" href="../static/login.css">
+
+
+
+</head>
+<body>
+ <div class="login-screen">
+          <div class="app-title">
+        <h1>Create an Account</h1>
+      </div>
+    <form id="myform" type="post">
+      <fieldset>
+    <div class="elements">
+      <label for="name">username :</label>
+      <input  required="required" type="text"  value="username" name="fname"  size="20"  />
+    </div>
+     <div class="elements">
+      <label for="password">password :</label>
+      <input required="required" type="text" value="numbers and letters" id="age" name="age" size="10" />
+    </div>  
+    <div class="elements">
+      <label for="phone"> phone number :</label>
+     <input required="required" type="tel" value="XXX-XXX-XXXX" id="age" name="age" size="10" />
+    </div>      
+               
+      <!-- <button onclick="createformtojson();">Create</button> -->
+ 
+    <div class="submit">
+       <input type="submit" id="btn" name="btn" class="btn" value="Submit" />
+    </div>
+    <span class="elements">Press "Ctrl + Shift + J" to see sent JSON in console: <span>
+  </fieldset>
+
+          <br>
+
+</form>
+</div>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+  $("#btn").click(function(e){
+     var jsonData = {};
+
+   var formData = $("#myform").serializeArray();
+  // console.log(formData);
+
+   $.each(formData, function() {
+        if (jsonData[this.name]) {
+           if (!jsonData[this.name].push) {
+               jsonData[this.name] = [jsonData[this.name]];
+           }
+           jsonData[this.name].push(this.value || '');
+       } else {
+           jsonData[this.name] = this.value || '';
+       }
+
+
+   });
+   console.log(jsonData);
+    $.ajax(
+    {
+        url : "/create",
+        type: "POST",
+        data : jsonData,
+
+    });
+    e.preventDefault(); 
+});
+});
+</script>
+
+    <!--<script>
+
+         var register_info ={
+        username:0 ,  // username
+        password: 0,  // password (hashed with SHA256)
+        phone: 0     // phone number
+      };
+
+
+        function send_register_info() {
+          document.getElementById("register-form").submit();
+                register_info["username"]=document.getElementById('register-name').value;
+                register_info["password"]document.getElementById('register-password').value;
+                register_info["phone"]document.getElementById('register-phone').value;
+
+            $.ajax({
+            url: '/create',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(register_info),
+            success: function(createaccount) {
+                
+                    jQuery.parseJSON(exportStops),
+                    $('#stops_select'),
+                    'Select an option'
+                    );
+                return false
+            },
+        });
+
+    }
+        }
+
+
+</script>-->
+</body>
+
+</html>
