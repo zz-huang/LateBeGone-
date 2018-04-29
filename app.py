@@ -6,9 +6,10 @@ import os
 import math
 import apikeys
 import hashlib
+import threading
 
 from datetime import datetime
-from time import sleep
+from time import *
 from flask import *
 from pymongo import MongoClient
 from jsonschema import validate, ValidationError
@@ -123,6 +124,7 @@ def login_local():
 			print("User does not exist in db")
 		elif password == check[0]["local"]["password"]:
 			session['logged_in'] = True
+			session['phone'] = "+1" + check[0]["local"]["phone"]
 			print("Login was successful")
 			return redirect('/')
 		else:
@@ -147,7 +149,7 @@ def create_page():
 		if check.count() != 0:
 			flash("Username already exists")
 			print("Username already exists")
-			return redirect('/create')
+			return redirect('/login_local')
 
 		new_user = {
 			"local":
@@ -159,6 +161,9 @@ def create_page():
 		}
 
 		result = db.users.insert_one(new_user)
+		flash("Account created")
+		print("Account created: ", result)
+		return redirect('/login_local')
 
 	return render_template('create.html')
 
@@ -343,7 +348,7 @@ def sendText(arrival_time):
 
 	twilioClient = Client(account_sid, auth_token)
 
-	ct=time.ctime()
+	ct=ctime()
 	ct=ct[11:19]
 
 	FMT = '%H:%M:%S'
@@ -353,7 +358,7 @@ def sendText(arrival_time):
 
 	if diff < 300:
 		twilioClient.api.account.messages.create(
-			to= apikeys.mynum,
+			to= session["phone"],
 			from_= apikeys.twilionum,
 			body="The MBTA is coming in " + tdelta + "minutes at " + str(arrival_time) + "! Get going!"
 		)
@@ -370,7 +375,7 @@ def delayText(arrival_time,x):
 
 	sleep(x-300)
 	twilioClient.api.account.messages.create(
-				to= apikeys.mynum,
+				to= session["phone"],
 				from_= apikeys.twilionum,
 				body="The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
 	)
