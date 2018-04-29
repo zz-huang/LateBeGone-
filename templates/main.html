@@ -44,7 +44,7 @@
             <button onclick="setUserStopToVariables();">Save</button>
         </br></br>
 
-        <button onclick="buildHtmlTable()">Predict</button>
+        <!-- <button onclick="buildHtmlTable()">Predict</button> -->
         <table id="prediction_table" border="1">
         </table>
 
@@ -727,7 +727,6 @@
     </script>
             {% extends "layout.html" %}
             {% block body %}
-            <h2>Overview</h2>
             {% if g.user %}
             <p>
                 Hello {{ g.user.screen_name }}!  Wanna tweet something?
@@ -739,7 +738,9 @@
                 </p>
             </form>
             {% if tweets %}
+            <n>
             <h3>Your Timeline</h3>
+        </n>
             <ul>
                 {% for tweet in tweets %}
                 <li><a href="http://twitter.com/{{ tweet.user.screen_name

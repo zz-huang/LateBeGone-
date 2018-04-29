@@ -47,8 +47,8 @@ def before_request():
 		g.user = session['twitter_oauth']
 
 
-#@app.route('/')
-#def index():
+# @app.route('/main')
+# def index():
 #    tweets = None
 #    if g.user is not None:
 #        resp = twitter.request('statuses/home_timeline.json')
@@ -105,9 +105,16 @@ def oauthorized():
 
 @app.route('/', methods=['GET'])
 def main_page():
-	if not session.get('logged_in'):
+    tweets = None
+    if g.user is not None:
+       resp = twitter.request('statuses/home_timeline.json')
+       if resp.status == 200:
+           tweets = resp.data
+       else:
+           flash('Unable to load tweets from Twitter.')
+    if not session.get('logged_in'):
 		return redirect('/login_local')
-	return render_template('main.html')
+    return render_template('main.html', tweets=tweets)
 
 # displays login page
 @app.route('/login_local', methods=['GET','POST'])
