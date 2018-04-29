@@ -129,7 +129,7 @@ def login_local():
 			flash("Password was incorrect")
 			print("Password was incorrect")
 
-	return render_template('login.html')
+	return render_template('login_local.html')
 
 @app.route('/logout_local')
 def logout_local():
@@ -139,22 +139,27 @@ def logout_local():
 @app.route('/create', methods=['GET','POST'])
 def create_page():
     if request.method == 'POST':
-        new_user = request.get_json()
+        username = request.form["name"]
+        password = request.form["password"]
+        phone = request.form["phone"]
 
         check = db.users.find({"username": username})
         if check.count() != 0:
             print("Username already exists")
             return redirect('/create')
 
-        with open('create_schema.json') as schema:
-            schema = json.load(schema)
-        try:
-            validate(new_user, schema)
-            local_pass_hash = hash(new_user["local"]["password"])
-            new_user["local"]["password"] = local_pass_hash
-            result = db.users.insert_one(new_user)
-        except ValidationError:
-            print('Schema Error: Incoming JSON could not be validated.')
+        new_user = {
+        	"local":
+        		{
+	        		"username": username,
+	        		"password": password,
+	        		"phone": phone
+        		}
+        }
+
+        local_pass_hash = hash(new_user["local"]["password"])
+        new_user["local"]["password"] = local_pass_hash
+        result = db.users.insert_one(new_user)
 
     return render_template('create.html')
 
@@ -369,6 +374,7 @@ def delayText(arrival_time,x):
                 to= apikeys.mynum,
                 from_= apikeys.twilionum,
                 body="The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
+    )
                 
 def emptyCache():
 	result = db.cache.find()
