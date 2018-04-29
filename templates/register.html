@@ -14,7 +14,7 @@
   <div class="app-title">
     <h1>Create an Account</h1>
   </div>
-  <form id="myform" type="post">
+  <!--<form id="myform" type="post">
     <fieldset>
       <div class="elements">
         <label for="name">Username:</label>
@@ -31,7 +31,7 @@
 
 
       <div class="submit">
-       <!--<input type="submit " id="#btn" name="#btn" class="#btn" value="Submit" /> -->
+      
        <button onclick="accounttojson();">Save</button> 
      </div>
      <span class="elements">Press "Ctrl + Shift + J" to see sent JSON in console: <span>
@@ -39,8 +39,49 @@
 
      <br>
 
-   </form>
+   </form> -->
+  {% extends "header.html" %}
+
+{% block body %}
+
+<body>
+  <div class = "container">
+    <h4>Register</h4>
+    <br>
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post action="/register/">
+      <dl>
+        {{render_field(form.username)}}
+        {{render_field(form.email)}}
+        {{render_field(form.password)}}
+        {{render_field(form.confirm)}}
+        {{render_field(form.accept_tos)}}
+      </dl>
+      <p><input type=submit value=Register></p>
+    </form>
+    
+    {% if error %}
+      <p class="error"><strong>Error:</strong>{{error}}</p>
+    {% endif %}
+
+  </div>
+</body>
+
+{% endblock %}
+ 
+
  </div>
+
+            <form action="{{ url_for('tweet') }}"  method=post>
+                <p>
+                    <input type=text name=tweet size=40>
+                    <input type=submit value="Tweet!">
+                </p>
+            </form>
+
+
+
+
 
 
  <script >
@@ -61,16 +102,16 @@
     list["password"] = password;
     list["phone"] = phone;
     creat_account_json["local"]=list;
-    
+
       $.ajax(
       {
-        url : "/create",
-        type: "POST",
+        url : '/create',
+        method: 'POST',
         contentType: "application/json",
         data : JSON.stringify(creat_account_json),
         success: function(exportStops) {
           console.log(exportStops)
-
+},
         });
     }
 
