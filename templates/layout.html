@@ -8,5 +8,10 @@
     {% endfor %}
     </ul>
   {% endif %}
+    {% if g.user %}
+  <li><a href="{{ url_for('logout') }}">sign out [{{ g.user.screen_name}}]</a></li>
+  {% else %}
+  <li><a href="{{ url_for('login') }}">sign in</a></li>
+  {% endif %}
 {% endwith %}
 {% block body %}{% endblock %}
