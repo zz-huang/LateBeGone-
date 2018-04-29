@@ -87,7 +87,6 @@ def login():
 	callback_url = url_for('oauthorized', next=request.args.get('next'))
 	return twitter.authorize(callback=callback_url or request.referrer or None)
 
-
 @app.route('/logout')
 def logout():
 	session.pop('twitter_oauth', None)
@@ -185,11 +184,21 @@ def sendStops():
 	route = jsonFront["route"]
 	direction = jsonFront["direction"]
 
-	mbtakey = apikeys.mbta_key
-
-	stopsURL = "https://api-v3.mbta.com/stops?api_key="+ (mbtakey)+"&filter%5Broute%5D=" + str(route)
-	stopsDATA = requests.get(stopsURL)
-	stopsJSON = stopsDATA.json()
+	cacheCheck = db.cache.find({"route": route})
+    if cacheCheck.count() != 0:
+        stopsJSON = cacheCheck[0]["json"]
+    else:
+        emptyCache() # this ensures only 1 route is cached at a time
+    	stopsURL = "https://api-v3.mbta.com/stops?api_key="+str(mbtakey)+"&filter%5Broute%5D=" + str(route)
+    	stopsDATA = requests.get(stopsURL)
+    	stopsJSON = stopsDATA.json()
+        # store in database 'cache' collection
+        cacheInsert = db.cache.insert_one(
+            {
+                "route": route,
+                "json": stopsJSON
+            }
+        )
 
 	returnStops = getStops(stopsJSON, direction)
 
