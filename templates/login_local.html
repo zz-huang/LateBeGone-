@@ -11,26 +11,27 @@
 
 </head>
 <body>
-{% extends "layout.html" %}
-{% block body %}
-  <h1>Login</h1>
-  {% if error %}
-    <p class=error><strong>Error:</strong> {{ error }}
-  {% endif %}
-  <form method=post>
-    <dl>
-      <dt>Username:
-      <dd><input type=text name=username value="{{
-          request.form.username }}">
-      <dt>Password:
-      <dd><input type=password name=password>
-    </dl>
-    <p><input type=submit value=Login>
-  </form>
-{% endblock %}
+ <form action="/login_local" method="post">
+
+      <fieldset>
+      <div class="elements">
+        <label for="name">Username:</label>
+        <input  required="required" type="text"  value="name" name="name"  size="20"  />
+      </div> 
+      <div class="elements">
+        <label for="password">Password:</label>
+        <input required="required" type="text" value="password" id="password" name="password" size="10" />
+      </div>   
+
+      <div class="button">
+       <button type="submit">Log In</button> 
+     </div>
+     </fieldset>
+
+   </form> 
  
-                <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block" >
-                <a href="/create">Create an Account</a>
+        <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block" >
+      <a href="/create">Create an Account</a>
 
 
 </body>
