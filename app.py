@@ -104,16 +104,16 @@ def oauthorized():
 
 @app.route('/', methods=['GET'])
 def main_page():
-    tweets = None
-    if g.user is not None:
-       resp = twitter.request('statuses/home_timeline.json')
-       if resp.status == 200:
-           tweets = resp.data
-       else:
-           flash('Unable to load tweets from Twitter.')
-    if not session.get('logged_in'):
+	tweets = None
+	if g.user is not None:
+	   resp = twitter.request('statuses/home_timeline.json')
+	   if resp.status == 200:
+		   tweets = resp.data
+	   else:
+		   flash('Unable to load tweets from Twitter.')
+	if not session.get('logged_in'):
 		return redirect('/login_local')
-    return render_template('main.html', tweets=tweets)
+	return render_template('main.html', tweets=tweets)
 
 # displays login page
 @app.route('/login_local', methods=['GET','POST'])
@@ -185,20 +185,20 @@ def sendStops():
 	direction = jsonFront["direction"]
 
 	cacheCheck = db.cache.find({"route": route})
-    if cacheCheck.count() != 0:
-        stopsJSON = cacheCheck[0]["json"]
-    else:
-        emptyCache() # this ensures only 1 route is cached at a time
-    	stopsURL = "https://api-v3.mbta.com/stops?api_key="+str(mbtakey)+"&filter%5Broute%5D=" + str(route)
-    	stopsDATA = requests.get(stopsURL)
-    	stopsJSON = stopsDATA.json()
-        # store in database 'cache' collection
-        cacheInsert = db.cache.insert_one(
-            {
-                "route": route,
-                "json": stopsJSON
-            }
-        )
+	if cacheCheck.count() != 0:
+		stopsJSON = cacheCheck[0]["json"]
+	else:
+		emptyCache() # this ensures only 1 route is cached at a time
+		stopsURL = "https://api-v3.mbta.com/stops?api_key="+str(apikeys.mbta_key)+"&filter%5Broute%5D=" + str(route)
+		stopsDATA = requests.get(stopsURL)
+		stopsJSON = stopsDATA.json()
+		# store in database 'cache' collection
+		cacheInsert = db.cache.insert_one(
+			{
+				"route": route,
+				"json": stopsJSON
+			}
+		)
 
 	returnStops = getStops(stopsJSON, direction)
 
