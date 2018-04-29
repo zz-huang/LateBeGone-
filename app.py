@@ -17,11 +17,9 @@ from twilio.rest import Client
 from flask_oauthlib.client import OAuth
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 mongoClient = MongoClient()
 db = mongoClient['database411']
-
-app.secret_key = 'development'
-
 oauth = OAuth(app)
 
 twitter = oauth.remote_app(
