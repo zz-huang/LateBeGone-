@@ -36,18 +36,19 @@
      </div></div>
 
    </form> 
-   <div class="lower">
+
 {% with messages = get_flashed_messages() %}
 {% if messages %}
+ <div class="lower">
     <ul class=flashes>
     {% for message in messages %}
       <li>{{ message }}</li>
     {% endfor %}
-    </ul>
+    </ul></div>
   {% endif %}
   {% endwith %}
 </div>
-</div>
+
 
 
     </body>
