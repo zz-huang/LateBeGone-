@@ -20,28 +20,32 @@
 
 </head>
 <body>
+  <div id="container">
+ <div class="app-title">
+  <h1>Late Be Gone</h1>
+    </div>
+
  <form action="/login_local" method="post">
 
-      <fieldset>
+
       <div class="elements">
         <label for="name">Username:</label>
-        <input  required="required" type="text"  value="name" name="name"  size="20"  />
+        <input  required="required" type="text"   name="name"  size="20"  />
       </div> 
       <div class="elements">
-        <label for="password">Password:</label>
-        <input required="required" type="text" value="password" id="password" name="password" size="10" />
+        <label for="password">Password:</label> <br>
+        <input required="required" type="password" id="password" name="password" size="20" />
       </div>   
 
+ <div class=lower>
       <div class="button">
-       <button type="submit">Log In</button> 
-     </div>
-     </fieldset>
-
+       <button type="submit">Log In </button> <br>
+     </div></div>
    </form> 
- 
-       <!-- <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block" >-->
-      <a href="/create">Create an Account</a>
 
+      <div class="elements">
+      <a href="/create">Create an Account</a></div>
+</div>
 
 </body>
 

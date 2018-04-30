@@ -18,74 +18,35 @@
 
 </head>
 <body>
- <div class="login-screen">
+
+  <div id="container">
   <div class="app-title">
-    <h1>Create an Account</h1>
+
+    <h1>Create Account</h1>
   </div>
   <form action="/create" method="post">
-    <fieldset>
+
       <div class="elements">
         <label for="name">Username:</label>
-        <input  required="required" type="text"  value="name" name="name"  size="20"  />
+        <input  required="required" type="text"  name="name"  size="20"  />
       </div> 
       <div class="elements">
-        <label for="password">Password:</label>
-        <input required="required" type="text" value="password" id="password" name="password" size="10" />
+        <label for="password">Password:</label><br>
+        <input required="required" type="password" id="password" name="password" size="20" />
       </div>   
       <div class="elements">
         <label for="phone">Phone number:</label>
-        <input required="required" type="tel" value="XXX-XXX-XXXX" id="phone" name="phone" size="10" />
-      </div>       </div>
-
-
+        <input required="required" type="tel"  id="phone" name="phone" size="10" />
+      </div>    
+ <div class=lower>
       <div class="button">
-       <button type="submit">Save</button> 
-     </div>
-     </fieldset>
-
-     <br>
+       <button type="submit">Create</button> 
+     </div></div>
 
    </form> 
 
- </div>
+</div>
 
-
-<!--
- <script >
-  var list=
-  {
-    "username": 0,
-    "password": 0,
-    "phone": 0
-  };   
-  var creat_account_json = 
-    { "local": 0};
-  function accounttojson() {
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
-    var phone = document.getElementById("phone").value;
-
-    list["username"] = username;
-    list["password"] = password;
-    list["phone"] = phone;
-    creat_account_json["local"]=list;
-
-      $.ajax(
-      {
-        url : '/create',
-        method: 'POST',
-        contentType: "application/json",
-        data : JSON.stringify(creat_account_json),
-        success: function(exportStops) {
-          console.log(exportStops)
-},
-        });
-    }
-
-
-
-
-</script>-->
 
     </body>
 
