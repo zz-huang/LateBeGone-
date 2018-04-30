@@ -96,7 +96,7 @@ def main_page():
 	# return render_template('main.html', tweets=tweets)
 	if not session.get('logged_in'):
 		return redirect('/login_local')
-	return render_template('main.html',tweets=tweets))
+	return render_template('main.html',tweets=tweets)
   
 # displays login page
 @app.route('/login_local', methods=['GET','POST'])
