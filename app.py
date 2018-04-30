@@ -109,7 +109,6 @@ def login_local():
 		if check.count() == 0:
 			flash("Username not found")
 			print("User does not exist in db")
-			redirect('/login_local')
 		elif password == check[0]["local"]["password"]:
 			session['logged_in'] = True
 			session['phone'] = "+1" + check[0]["local"]["phone"]
@@ -137,7 +136,6 @@ def create_page():
 		if check.count() != 0:
 			flash('Username already exists')
 			print("Username already exists")
-			# return redirect('/create')
 		else:
 			new_user = {
 				"local":
