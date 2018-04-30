@@ -86,20 +86,18 @@ def oauthorized():
 
 @app.route('/', methods=['GET'])
 def main_page():
-	if not session.get('logged_in'):
-		return redirect('/login_local')
-
 	tweets = None
 	if g.user is not None:
-		resp = twitter.request('statuses/home_timeline.json')
-		if resp.status == 200:
-			tweets = resp.data
-		else:
-			flash('Unable to load tweets from Twitter.')
-		return render_template('main.html', tweets=tweets)
-
-	return render_template('main.html')
-
+	   resp = twitter.request('statuses/home_timeline.json')
+	   if resp.status == 200:
+		   tweets = resp.data
+	   else:
+		   flash('Unable to load tweets from Twitter.')
+	# return render_template('main.html', tweets=tweets)
+	if not session.get('logged_in'):
+		return redirect('/login_local')
+	return render_template('main.html',tweets=tweets))
+  
 # displays login page
 @app.route('/login_local', methods=['GET','POST'])
 def login_local():
@@ -111,6 +109,7 @@ def login_local():
 		if check.count() == 0:
 			flash("Username not found")
 			print("User does not exist in db")
+			redirect('/login_local')
 		elif password == check[0]["local"]["password"]:
 			session['logged_in'] = True
 			session['phone'] = "+1" + check[0]["local"]["phone"]
@@ -136,23 +135,23 @@ def create_page():
 
 		check = db.users.find({"local.username" : username})
 		if check.count() != 0:
-			flash("Username already exists")
+			flash('Username already exists')
 			print("Username already exists")
+			# return redirect('/create')
+		else:
+			new_user = {
+				"local":
+					{
+						"username": username,
+						"password": password,
+						"phone": phone
+					}
+			}
+
+			result = db.users.insert_one(new_user)
+			flash("Account created")
+			print("Account created: ", result)
 			return redirect('/login_local')
-
-		new_user = {
-			"local":
-				{
-					"username": username,
-					"password": password,
-					"phone": phone
-				}
-		}
-
-		result = db.users.insert_one(new_user)
-		flash("Account created")
-		print("Account created: ", result)
-		return redirect('/login_local')
 
 	return render_template('create.html')
 

@@ -1,11 +1,19 @@
 <!DOCTYPE html>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
 <html lang="en" >
-
 <head>
+
   <meta charset="UTF-8">
   <title>Create</title>
-  
-  
+
   <link rel="stylesheet" href="../static/login.css">
 
 </head>
@@ -40,16 +48,6 @@
    </form> 
 
  </div>
-
-            <form action="{{ url_for('tweet') }}"  method=post>
-                <p>
-                    <input type=text name=tweet size=40>
-                    <input type=submit value="Tweet!">
-                </p>
-            </form>
-
-
-
 
 
 <!--
