@@ -3,13 +3,38 @@
 * { box-sizing: border-box; }
 
 body { 
-  font-family: 'Open Sans', sans-serif;
-  color: #666;
 
-  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  color: #666;
+  background: #fed136;
+  font-family:  "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif; 
 }
 
-/* STRUCTURE */
+/* STRUCTURE 
+.logoutbutton {
+  font-size: .8em;
+  font-family: 'Oswald', sans-serif;
+	position: relative;
+  right: -18px;
+  bottom: -4px;
+  letter-spacing: 3px;
+  opacity: 0;
+  transition: opacity .45s;
+  -webkit-transition: opacity .35s;
+  
+}*/
+
+.button {
+	text-decoration: none;
+	float: right;
+  padding: 12px;
+  margin: 25px;
+  color: white;
+  width: 100px;
+  background-color: #282828;
+  transition: width .35s;
+
+}
+
 
 .wrapper {
 	padding: 5px;
@@ -18,30 +43,53 @@ body {
 	margin: 20px auto;
 }
 header {
-	padding: 0 15px;
+	padding: 10 15px;
 	text-align: center; 
 }
-h1{	font-family: 'Viga', sans-serif;
+h1{	
     font-size: 36px;
     text-align: center;
     color: #fff;
     margin-bottom: 80px;
     text-transform: uppercase;
+font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.columns {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
-	margin: 5px 0;
-    width: 67%;
+
+label {
+  color: #777777;
+	  font-size: 16px;
+  font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-transform: none;
+
+  font-weight: 400;
+  margin-bottom: 75px;
+
 }
+button{
+    color: white;
+  background-color: #fed136;
+  border-color: #fed136;
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 2px;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+button:hover,button:active {
+  color: white;
+  background-color: #fec503;
+  border-color: #f6bf01;
+}
+
 
 .column1 {
 	flex: 1;
 	margin: 2px;
 	padding: 10px;
-	 background: #FEE532;
+	 background: #282828;
 	 text-align: center; 
+	color: white;
 	&:first-child { margin-left: 0; }
 	&:last-child { margin-right: 0; }
 
@@ -51,8 +99,9 @@ h1{	font-family: 'Viga', sans-serif;
 	flex: 1;
 	margin: 2px;
 	padding: 10px;
-	 background: #23AF4C;
+	 background: #282828;
 	 text-align: center; 
+	 color: white;
 	&:first-child { margin-left: 0; }
 	&:last-child { margin-right: 0; }
 }
@@ -60,8 +109,9 @@ h1{	font-family: 'Viga', sans-serif;
 	flex: 1;
 	margin: 2px;
 	padding: 10px;
-	background: #FC7B16;
+	background: #282828;
 	text-align: center; 
+	color: white;
 	&:first-child { margin-left: 0; }
 	&:last-child { margin-right: 0; }
 	

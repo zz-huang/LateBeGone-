@@ -4,6 +4,9 @@
 <head>
     <title>LateBeGone!</title>
     <link rel="stylesheet" href="../static/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=DroiABOUTd+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
     <script src="../static/index.js"></script>
     <meta charset="UTF-8">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuaW4Ecn3gqokwxP0PW3ZdVrK1og7YI28&libraries=places" type="text/javascript"></script>
@@ -16,33 +19,33 @@
 </head>
 <body>
     <div class="wrapper">
+       <div class="button">
+           <form action="/logout_local" method="get" target="_blank">
+            <div class="logoutbutton">
+                <button type="submit">Logout</button></div>
+            </form></div>        
+            <header>
 
-        <header>
-            <h1>Welcome!</h1>
+                <h1>Welcome!</h1>
+            </header>
+            <section class="columns">
 
-             <form action="/logout_local" method="get" target="_blank">
-    <button type="submit">Logout</button>
-</form>
+                <div class="column1">
+                    <h2>MBTA</h2>
 
-        </header>
-        <section class="columns">
+                    <label>Routes:</label>
+                    <select id="routes_select">
 
-            <div class="column1">
-                <h2>MBTA</h2>
-                
-                <label>Routes:</label>
-                <select id="routes_select">
+                    </select>
+                    <button onclick="setUserRouteToVariables();">Save</button> 
+                <br>    <br>
 
+                <label>Stops:</label>
+                <select id="stops_select">
                 </select>
-                <button onclick="setUserRouteToVariables();">Save</button> 
-            </br>
 
-            <label>Stops:</label>
-            <select id="stops_select">
-            </select>
-
-            <button onclick="setUserStopToVariables();">Save</button>
-        </br></br>
+                <button onclick="setUserStopToVariables();">Save</button>
+            </br></br>
 
 
         <table id="prediction_table" border="1">
@@ -60,19 +63,19 @@
         <input type="hidden" id="city2" name="city2" />
         <input type="hidden" id="cityLat" name="cityLat" />
         <input type="hidden" id="cityLng" name="cityLng" />
+        <br>  <br>
         <label>Enter Destination</label>
         <input id="destTextField" type="text" size="50" placeholder="Enter destination" autocomplete="on" runat="server" />
         <input type="hidden" id="destcity2" name="destcity2" />
         <input type="hidden" id="destcityLat" name="destcityLat" />
         <input type="hidden" id="destcityLng" name="destcityLng" />
-
-
-        <label>Get Estimates</label>
-        <button onclick="getUberPrice(); getLyftPrice();">Get Comparison</button>
+      
+        <!--< <label>Get Estimates</label>  -->
+        <button onclick="getUberPrice(); getLyftPrice();"> Compare</button>
         <!--<label>Get Lyft Estimate</label>-->
         <!--<button onclick="getUberPrice();">Lyft</button>-->
 
-        <table id="ubertbl" style="width:50%; float:left">
+        <table id="ubertbl" style="width:50%; float:right">
             <tr>
                 <!--<td>Uber Prices</td>-->
             </tr>
@@ -722,8 +725,11 @@
         }
 
     </script>
+         <div class="column3">
+
             {% extends "layout.html" %}
             {% block body %}
+
                 <div style="position: relative; text-align: center">
       <p style="position: fixed; bottom: 0; width:100%;"></p>
             {% if g.user %}
@@ -733,7 +739,8 @@
             <form action="{{ url_for('tweet') }}"  method=post>
                 <p>
                     <input type=text name=tweet size=40>
-                    <input type=submit value="Tweet!">
+  
+                    <input type=submit value="Tweet!"> 
                 </p>
             </form>
             {% if tweets %}
@@ -762,5 +769,6 @@
             </p>
   {% endif %}
             {% endblock %}
+        </div>
 </div>
 </html>
