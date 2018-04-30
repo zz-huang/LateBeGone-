@@ -100,12 +100,14 @@ box-shadow: none;
 }
  
 
-button {float: right;
-  margin-right: 20px;
+button {
+top: 50%;
+    left: 40%;
+  position: relative;
   margin-top: 20px;
   width: 80px;
   font-size: 16px;
-   line-height: 20px;
+  line-height: 20px;
   font-weight: bold;
   color: #fff;
   text-decoration: none;
@@ -123,12 +125,6 @@ button:hover {
   background-color: #2980B9;
 }
  
-.login-link {
-  font-size: 12px;
-  color: #444;
-  display: block;
-  margin-top: 12px;
-}
 
 .lower {
   background: #ecf2f5;
