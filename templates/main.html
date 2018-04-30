@@ -727,6 +727,8 @@
     </script>
             {% extends "layout.html" %}
             {% block body %}
+                <div style="position: relative; text-align: center">
+      <p style="position: fixed; bottom: 0; width:100%;"> bla bla</p>
             {% if g.user %}
             <p>
                 Hello {{ g.user.screen_name }}!  Wanna tweet something?
@@ -759,4 +761,5 @@
             </p>
             {% endif %}
             {% endblock %}
+                </div>
 </html>

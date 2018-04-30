@@ -24,8 +24,8 @@ oauth = OAuth(app)
 
 twitter = oauth.remote_app(
 	'twitter',
-	consumer_key='xBeXxg9lyElUgwZT6AZ0A',
-	consumer_secret='aawnSpNTOVuDCjx7HMh6uSXetjNN8zWLpZwCEU4LBrk',
+	consumer_key=apikeys.twitterkey,
+	consumer_secret=apikeys.twittersecret,
 	base_url='https://api.twitter.com/1.1/',
 	request_token_url='https://api.twitter.com/oauth/request_token',
 	access_token_url='https://api.twitter.com/oauth/access_token',
@@ -47,25 +47,13 @@ def before_request():
 		g.user = session['twitter_oauth']
 
 
-# @app.route('/main')
-# def index():
-#    tweets = None
-#    if g.user is not None:
-#        resp = twitter.request('statuses/home_timeline.json')
-#        if resp.status == 200:
-#            tweets = resp.data
-#        else:
-#            flash('Unable to load tweets from Twitter.')
-#    return render_template('main.html', tweets=tweets)
-
-
 @app.route('/tweet', methods=['POST'])
 def tweet():
 	if g.user is None:
 		return redirect(url_for('login', next=request.url))
 	status = request.form['tweet']
 	if not status:
-		return redirect(url_for('index'))
+		return redirect('/')
 	resp = twitter.post('statuses/update.json', data={
 		'status': status
 	})
@@ -79,7 +67,7 @@ def tweet():
 		flash('Authorization error with Twitter.')
 	else:
 		flash('Successfully tweeted your tweet (ID: #%s)' % resp.data['id'])
-	return redirect(url_for('index'))
+	return redirect('/')
 
 
 @app.route('/login')
@@ -90,7 +78,7 @@ def login():
 @app.route('/logout')
 def logout():
 	session.pop('twitter_oauth', None)
-	return redirect(url_for('index'))
+	return redirect('/')
 
 
 @app.route('/oauthorized')
@@ -100,7 +88,7 @@ def oauthorized():
 		flash('You denied the request to sign in.')
 	else:
 		session['twitter_oauth'] = resp
-	return redirect(url_for('index'))
+	return redirect('/')
 
 @app.route('/', methods=['GET'])
 def main_page():
@@ -111,9 +99,10 @@ def main_page():
 		   tweets = resp.data
 	   else:
 		   flash('Unable to load tweets from Twitter.')
+	return render_template('main.html', tweets=tweets)
 	if not session.get('logged_in'):
 		return redirect('/login_local')
-	return render_template('main.html', tweets=tweets)
+	return render_template('main.html')
 
 # displays login page
 @app.route('/login_local', methods=['GET','POST'])
@@ -140,7 +129,7 @@ def login_local():
 @app.route('/logout_local')
 def logout_local():
 	session['logged_in'] = False
-	return redirect('/')
+	return redirect('/login_local')
 
 @app.route('/create', methods=['GET','POST'])
 def create_page():
