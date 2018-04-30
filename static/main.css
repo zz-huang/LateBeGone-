@@ -4,34 +4,21 @@
 
 body { 
 
-  color: #666;
-  background: #fed136;
-  font-family:  "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif; 
+	color: #666;
+	background: #fed136;
+	font-family:  "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif; 
 }
 
-/* STRUCTURE 
-.logoutbutton {
-  font-size: .8em;
-  font-family: 'Oswald', sans-serif;
-	position: relative;
-  right: -18px;
-  bottom: -4px;
-  letter-spacing: 3px;
-  opacity: 0;
-  transition: opacity .45s;
-  -webkit-transition: opacity .35s;
-  
-}*/
 
 .button {
 	text-decoration: none;
 	float: right;
-  padding: 12px;
-  margin: 25px;
-  color: white;
-  width: 100px;
-  background-color: #282828;
-  transition: width .35s;
+	padding: 12px;
+	margin: 25px;
+	color: white;
+	width: 100px;
+	background-color: #282828;
+	transition: width .35s;
 
 }
 
@@ -47,39 +34,39 @@ header {
 	text-align: center; 
 }
 h1{	
-    font-size: 36px;
-    text-align: center;
-    color: #fff;
-    margin-bottom: 80px;
-    text-transform: uppercase;
-font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 36px;
+	text-align: center;
+	color: #fff;
+	margin-bottom: 80px;
+	text-transform: uppercase;
+	font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 label {
-  color: #777777;
-	  font-size: 16px;
-  font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-transform: none;
+	color: #777777;
+	font-size: 16px;
+	font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	text-transform: none;
 
-  font-weight: 400;
-  margin-bottom: 75px;
+	font-weight: 400;
+	margin-bottom: 75px;
 
 }
 button{
-    color: white;
-  background-color: #fed136;
-  border-color: #fed136;
-  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-transform: uppercase;
-  font-weight: 700;
-  border-radius: 2px;
-  font-size: 12px;
-  padding: 5px 10px;
+	color: white;
+	background-color: #fed136;
+	border-color: #fed136;
+	font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	text-transform: uppercase;
+	font-weight: 700;
+	border-radius: 2px;
+	font-size: 12px;
+	padding: 5px 10px;
 }
 button:hover,button:active {
-  color: white;
-  background-color: #fec503;
-  border-color: #f6bf01;
+	color: white;
+	background-color: #fec503;
+	border-color: #f6bf01;
 }
 
 
@@ -87,8 +74,8 @@ button:hover,button:active {
 	flex: 1;
 	margin: 2px;
 	padding: 10px;
-	 background: #282828;
-	 text-align: center; 
+	background: #282828;
+	text-align: center; 
 	color: white;
 	&:first-child { margin-left: 0; }
 	&:last-child { margin-right: 0; }
@@ -99,9 +86,9 @@ button:hover,button:active {
 	flex: 1;
 	margin: 2px;
 	padding: 10px;
-	 background: #282828;
-	 text-align: center; 
-	 color: white;
+	background: #282828;
+	text-align: center; 
+	color: white;
 	&:first-child { margin-left: 0; }
 	&:last-child { margin-right: 0; }
 }
@@ -118,15 +105,16 @@ button:hover,button:active {
 	
 }
 
+
 footer {
 	padding: 0 15px;
 }
 
 
 @media screen and (max-width: 980px) {
-  .columns .column {
+	.columns .column {
 		margin-bottom: 5px;
-    flex-basis: 40%;
+		flex-basis: 40%;
 		&:nth-last-child(2) {
 			margin-right: 0;
 		}
