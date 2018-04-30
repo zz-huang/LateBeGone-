@@ -1,13 +1,5 @@
 <!DOCTYPE html>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-  {% endwith %}
+
 <html lang="en" >
 
 <head>
@@ -42,11 +34,23 @@
        <button type="submit">Log In </button> <br>
      </div></div>
    </form> 
-
-      <div class="elements">
+  <div class="elements">
       <a href="/create">Create an Account</a></div>
-</div>
 
+
+    <div class="lower">
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+    
+
+</div></div>
 </body>
 
 </html>

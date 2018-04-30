@@ -81,7 +81,13 @@ label {
   padding-top: 10px;
   font-size: 14px;
 }
+.flashes{
+  color: #008B8B;
+font-weight: bold; 
+  margin-left: 18px;
+  font-size: 18px;
 
+}
 input {
 text-align: center;
 background-color: #ECF0F1;
@@ -102,7 +108,7 @@ box-shadow: none;
 
 button {
 top: 50%;
-    left: 40%;
+  left: 40%;
   position: relative;
   margin-top: 20px;
   width: 80px;
@@ -137,7 +143,7 @@ button:hover {
 
 }
 
-a{    color: #555;
+a{    color: #008B8B;
   display: inlinblock;
   font-size: 14px;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
