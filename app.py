@@ -174,9 +174,10 @@ def sendStops():
 		stopsJSON = cacheCheck[0]["json"]
 	else:
 		emptyCache() # this ensures only 1 route is cached at a time
-		stopsURL = "https://api-v3.mbta.com/stops?api_key="+str(apikeys.mbta_key)+"&filter%5Broute%5D=" + str(route)
+		stopsURL = "https://api-v3.mbta.com/stops?api_key=" + str(apikeys.mbta_key) + "&filter%5Broute%5D=" + str(route)
 		stopsDATA = requests.get(stopsURL)
 		stopsJSON = stopsDATA.json()
+		print("API CALL MADE")
 		# store in database 'cache' collection
 		cacheInsert = db.cache.insert_one(
 			{
@@ -357,9 +358,9 @@ def sendText(arrival_time):
 
 	if diff < 300:
 		twilioClient.api.account.messages.create(
-			to= session["phone"],
+			to = session["phone"],
 			from_= apikeys.twilionum,
-			body="The MBTA is coming in " + tdelta + "minutes at " + str(arrival_time) + "! Get going!"
+			body = "The MBTA is coming in " + tdelta + "minutes at " + str(arrival_time) + "! Get going!"
 		)
 	else:
 		download_thread = threading.Thread(target=delayText, args= (arrival_time,diff))
@@ -374,9 +375,9 @@ def delayText(arrival_time,x):
 
 	sleep(x-300)
 	twilioClient.api.account.messages.create(
-				to= session["phone"],
-				from_= apikeys.twilionum,
-				body="The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
+				to = session["phone"],
+				from_ = apikeys.twilionum,
+				body = "The MBTA is coming in 5 minutes at " + str(arrival_time) + "!"
 	)
 				
 def emptyCache():
