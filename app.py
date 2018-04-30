@@ -12,7 +12,6 @@ from datetime import datetime
 from time import *
 from flask import *
 from pymongo import MongoClient
-from jsonschema import validate, ValidationError
 from twilio.rest import Client
 from flask_oauthlib.client import OAuth
 
@@ -32,20 +31,17 @@ twitter = oauth.remote_app(
 	authorize_url='https://api.twitter.com/oauth/authorize'
 )
 
-
 @twitter.tokengetter
 def get_twitter_token():
 	if 'twitter_oauth' in session:
 		resp = session['twitter_oauth']
 		return resp['oauth_token'], resp['oauth_token_secret']
 
-
 @app.before_request
 def before_request():
 	g.user = None
 	if 'twitter_oauth' in session:
 		g.user = session['twitter_oauth']
-
 
 @app.route('/tweet', methods=['POST'])
 def tweet():
@@ -69,7 +65,6 @@ def tweet():
 		flash('Successfully tweeted your tweet (ID: #%s)' % resp.data['id'])
 	return redirect('/')
 
-
 @app.route('/login')
 def login():
 	callback_url = url_for('oauthorized', next=request.args.get('next'))
@@ -79,7 +74,6 @@ def login():
 def logout():
 	session.pop('twitter_oauth', None)
 	return redirect('/')
-
 
 @app.route('/oauthorized')
 def oauthorized():
@@ -92,16 +86,18 @@ def oauthorized():
 
 @app.route('/', methods=['GET'])
 def main_page():
-	tweets = None
-	if g.user is not None:
-	   resp = twitter.request('statuses/home_timeline.json')
-	   if resp.status == 200:
-		   tweets = resp.data
-	   else:
-		   flash('Unable to load tweets from Twitter.')
-	return render_template('main.html', tweets=tweets)
 	if not session.get('logged_in'):
 		return redirect('/login_local')
+
+	tweets = None
+	if g.user is not None:
+		resp = twitter.request('statuses/home_timeline.json')
+		if resp.status == 200:
+			tweets = resp.data
+		else:
+			flash('Unable to load tweets from Twitter.')
+		return render_template('main.html', tweets=tweets)
+
 	return render_template('main.html')
 
 # displays login page
@@ -388,7 +384,7 @@ def emptyCache():
 	if result.count() == 0:
 		print("Cache already empty")
 	else:
-		result = db.restaurants.delete_many({})
+		result = db.cache.delete_many({})
 		print("Cache emptied of {} documents".format(result.deleted_count))
 
 def hash(text):
